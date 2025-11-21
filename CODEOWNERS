@@ -1,0 +1,5 @@
+# CODEOWNERS
+# Each line designates owners for matching files or directories.
+# * means all files in the repo.
+
+*  @shweta-intuitdev @Soumiya-mohan
