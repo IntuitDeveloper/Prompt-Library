@@ -30,8 +30,8 @@
   },
   "_comment_sdk_minimum_version": "SDK MINIMUM VERSION — The earliest SDK version that includes CloudEvents parsing support. Task 2 checks the project's current version against this.",
   "sdk_minimum_version": {
-    "java": "6.7.0",
-    "dotnet": "14.7.0.4",
+    "java": "6.5.2",
+    "dotnet": "14.7.0.2",
     "php": "6.2.2",
     "nodejs": "N/A — no official V3 SDK; parse CloudEvents JSON payload directly",
     "python": "N/A — no official V3 SDK; parse CloudEvents JSON payload directly"
