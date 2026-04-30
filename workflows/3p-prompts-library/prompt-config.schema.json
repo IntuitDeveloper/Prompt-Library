@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Intuit Developer Prompt Library Configuration",
+  "description": "Schema for prompt-config.json — validates configurable and static fields used by merge-prompt.js",
+  "type": "object",
+  "required": [
+    "integration_mode",
+    "language_framework",
+    "type_of_transaction",
+    "typing_system",
+    "transaction_creation_instructions",
+    "markup_percentages",
+    "project_estimate_creation_instructions",
+    "graphql_endpoint_production",
+    "graphql_endpoint_sandbox",
+    "graphql_schema",
+    "transaction_v3_api_endpoint",
+    "get_transaction_endpoint",
+    "company_info_rest_v3_api_endpoint",
+    "company_preferences_rest_v3_api_endpoint",
+    "rest_v3_api_documentation",
+    "project-estimate-documentation",
+    "projects_discovery_query",
+    "project_creation_query"
+  ],
+  "properties": {
+    "integration_mode": {
+      "type": "string",
+      "enum": ["new", "existing"],
+      "description": "Whether to scaffold a new project or produce importable modules for an existing codebase"
+    },
+    "language_framework": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Target language or framework for generated code (e.g., Python3, TypeScript, Java)"
+    },
+    "type_of_transaction": {
+      "type": "string",
+      "pattern": "^[a-z]+$",
+      "enum": [
+        "bill",
+        "creditmemo",
+        "deposit",
+        "estimate",
+        "expense",
+        "purchase",
+        "invoice",
+        "journalentry",
+        "purchaseorder",
+        "refundreceipt",
+        "salesreceipt",
+        "vendorcredit"
+      ],
+      "description": "QuickBooks transaction type (must be all lowercase)"
+    },
+    "typing_system": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Type system style for the chosen language (e.g., hints (dataclasses), Pydantic models)"
+    },
+    "transaction_creation_instructions": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Free-form instructions for creating a Dimensions-tagged transaction"
+    },
+    "markup_percentages": {
+      "type": "number",
+      "description": "Markup percentage for Project Estimate cost calculations (positive value = profit, negative value = loss)"
+    },
+    "project_estimate_creation_instructions": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Free-form instructions for creating a Project Estimate"
+    },
+    "graphql_endpoint_production": {
+      "type": "string",
+      "description": "Production GraphQL endpoint"
+    },
+    "graphql_endpoint_sandbox": {
+      "type": "string",
+      "description": "Sandbox GraphQL endpoint"
+    },
+    "graphql_schema": {
+      "type": "string",
+      "description": "URL to the GraphQL schema documentation"
+    },
+    "create_dimension_qbo_ui": {
+      "type": "string",
+      "description": "URL to create dimensions in the QuickBooks UI"
+    },
+    "custom_extensions_structure": {
+      "type": "string",
+      "description": "JSON structure for CustomExtensions payload"
+    },
+    "transaction_v3_api_endpoint": {
+      "type": "string",
+      "description": "REST V3 endpoint for creating transactions"
+    },
+    "get_transaction_endpoint": {
+      "type": "string",
+      "description": "REST V3 endpoint for reading a transaction"
+    },
+    "company_info_rest_v3_api_endpoint": {
+      "type": "string",
+      "description": "REST V3 endpoint for querying CompanyInfo"
+    },
+    "company_preferences_rest_v3_api_endpoint": {
+      "type": "string",
+      "description": "REST V3 endpoint for querying Company Preferences"
+    },
+    "dimension_Api_documentation": {
+      "type": "string",
+      "description": "URL to Dimensions API documentation"
+    },
+    "project-estimate-documentation": {
+      "type": "string",
+      "description": "URL to Project Estimate use-case documentation"
+    },
+    "rest_v3_api_documentation": {
+      "type": "string",
+      "description": "URL to REST V3 API reference documentation"
+    },
+    "dimension_discovery_query": {
+      "type": "string",
+      "description": "GraphQL query for fetching dimension definitions"
+    },
+    "dimension_values_query": {
+      "type": "string",
+      "description": "GraphQL query for fetching dimension values"
+    },
+    "projects_discovery_query": {
+      "type": "string",
+      "description": "GraphQL query for fetching projects"
+    },
+    "project_creation_query": {
+      "type": "string",
+      "description": "GraphQL mutation for creating a project"
+    },
+    "php-sdk-documentation": {
+      "type": "string",
+      "description": "URL to PHP SDK documentation"
+    },
+    "oauth2-documentation": {
+      "type": "string",
+      "description": "URL to OAuth 2.0 documentation"
+    },
+    "java-sdk-official": {
+      "type": "string",
+      "description": "URL to official Java SDK on Maven Central"
+    },
+    "java-sdk-dependency": {
+      "type": "string",
+      "description": "Build tool for Java SDK dependency (e.g., Gradle, Maven)"
+    },
+    "java-sdk-documentation": {
+      "type": "string",
+      "description": "URL to Java SDK installation documentation"
+    }
+  },
+  "additionalProperties": false
+}

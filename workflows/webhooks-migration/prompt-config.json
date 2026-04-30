@@ -1,0 +1,105 @@
+{
+  "_README": "THIS FILE is the single source of truth for all configurable values in the webhooks-cloudevents prompt. The merge script (merge-prompt.js) reads this file, picks the correct value for each key based on the selected language, and replaces every {{variable}} in prompt-template.md to produce ready-prompt.md. There are two types of values here: (1) STRINGS — shared across all languages (URLs, header names, algorithms), and (2) OBJECTS (language maps) — where each key is a language name and the merge script picks the one matching the 'language' field. To switch languages, change the 'language' value below OR pass it as a CLI argument: node merge-prompt.js nodejs. The _comment_ keys are documentation only — the merge script ignores them because no {{_comment_*}} placeholders exist in the template.",
+
+  "_comment_language": "LANGUAGE SELECTOR — Change this value to generate the prompt for a different language. Supported: java, dotnet, php, nodejs, python. All language maps below will resolve to this key.",
+  "language": "java",
+
+  "_comment_language_framework": "FRAMEWORK — The language + framework combination used in the prompt's Role and Context sections. The AI uses this to generate framework-idiomatic code.",
+  "language_framework": {
+    "java": "Java 21 / Spring Boot",
+    "dotnet": "C# / .NET 8 / ASP.NET Core",
+    "php": "PHP",
+    "nodejs": "Node.js / Express",
+    "python": "Python / Flask"
+  },
+  "_comment_build_tool": "BUILD TOOL — Used by Task 0 to detect the project's build system and verify dependencies (e.g., SDK version in build.gradle or package.json).",
+  "build_tool": {
+    "java": "Gradle",
+    "dotnet": "dotnet CLI / NuGet",
+    "php": "Composer",
+    "nodejs": "npm",
+    "python": "pip"
+  },
+  "_comment_sdk_source": "SDK SOURCE REPO — GitHub URL for the QuickBooks SDK. The AI derives all method names and class signatures from this repo. This is the anti-hallucination anchor — the AI cannot invent SDK methods not found here.",
+  "sdk_source": {
+    "java": "https://github.com/intuit/QuickBooks-V3-Java-SDK",
+    "dotnet": "https://github.com/intuit/QuickBooks-V3-DotNET-SDK",
+    "php": "https://github.com/intuit/QuickBooks-V3-PHP-SDK",
+    "nodejs": "https://github.com/intuit/oauth-jsclient (OAuth client only — no official V3 SDK; use raw REST API calls for webhooks parsing)",
+    "python": "https://github.com/intuit/oauth-pythonclient (OAuth client only — no official V3 SDK; use raw REST API calls for webhooks parsing)"
+  },
+  "_comment_sdk_minimum_version": "SDK MINIMUM VERSION — The earliest SDK version that includes CloudEvents parsing support. Task 2 checks the project's current version against this.",
+  "sdk_minimum_version": {
+    "java": "6.6.2",
+    "dotnet": "14.7.0.4",
+    "php": "6.2.2",
+    "nodejs": "N/A — no official V3 SDK; parse CloudEvents JSON payload directly",
+    "python": "N/A — no official V3 SDK; parse CloudEvents JSON payload directly"
+  },
+  "_comment_sdk_cloudevents_class": "SDK CLOUDEVENTS CLASS — The fully qualified class name for parsing CloudEvents payloads. Task 2 uses this to generate the correct import and deserialization code. Node.js and Python don't have an SDK class — they parse raw JSON.",
+  "sdk_cloudevents_class": {
+    "java": "WebhooksCloudEvents (com.intuit.ipp.data.WebhooksCloudEvents)",
+    "dotnet": "WebhooksCloudEvents (Intuit.Ipp.Data.WebhooksCloudEvents)",
+    "php": "WebhooksCloudEvents (QuickBooksOnline\\API\\Webhooks\\WebhooksCloudEvents)",
+    "nodejs": "N/A — no SDK class; parse the raw CloudEvents JSON array from the request body directly",
+    "python": "N/A — no SDK class; parse the raw CloudEvents JSON array from the request body directly"
+  },
+  "_comment_sdk_data_package": "SDK DATA PACKAGE — The package/namespace containing webhook data models. Used in import statements.",
+  "sdk_data_package": {
+    "java": "com.intuit.ipp.data",
+    "dotnet": "Intuit.Ipp.Data",
+    "php": "QuickBooksOnline\\API\\Data",
+    "nodejs": "N/A — define your own TypeScript interfaces or plain objects for the CloudEvents payload",
+    "python": "N/A — define your own dataclasses or TypedDict for the CloudEvents payload"
+  },
+  "_comment_sdk_service_package": "SDK SERVICE PACKAGE — The package/namespace for service classes (API calls, data fetching). Used in import statements.",
+  "sdk_service_package": {
+    "java": "com.intuit.ipp.services",
+    "dotnet": "Intuit.Ipp.DataService",
+    "php": "QuickBooksOnline\\API\\DataService",
+    "nodejs": "N/A — use axios, node-fetch, or the built-in fetch API for REST calls",
+    "python": "N/A — use the requests library for REST calls"
+  },
+  "_comment_typing_system": "TYPING SYSTEM — The language's type definition mechanism. Task 2 uses this when suggesting typed models for the CloudEvents payload.",
+  "typing_system": {
+    "java": "Java classes/records",
+    "dotnet": "C# records/classes",
+    "php": "PHP classes",
+    "nodejs": "TypeScript interfaces",
+    "python": "Python dataclasses/TypedDict"
+  },
+  "_comment_content_type_fix": "CONTENT-TYPE FIX — Framework-specific instructions for Task 4. CloudEvents may arrive with Content-Type: application/cloudevents+json, which causes a silent 415 rejection if the endpoint restricts content types. This tells the AI exactly how to fix it per framework.",
+  "content_type_fix": {
+    "java": "Remove `consumes` from `@RequestMapping` / `@PostMapping`, or explicitly add both: `consumes = {\"application/json\", \"application/cloudevents+json\"}`",
+    "dotnet": "Update the `[Consumes]` attribute on the controller action to accept both: `[Consumes(\"application/json\", \"application/cloudevents+json\")]`",
+    "php": "Check `$_SERVER['CONTENT_TYPE']` or the framework's request object to accept both `application/json` and `application/cloudevents+json`",
+    "nodejs": "Remove `express.json()` strict content-type checking, or add a custom middleware that accepts both `application/json` and `application/cloudevents+json`",
+    "python": "Update Flask route to accept both content types: `request.content_type in ['application/json', 'application/cloudevents+json']`"
+  },
+
+  "_comment_shared_references": "SHARED REFERENCES — URLs and constants that are the same across all languages. These are the source-of-truth links the AI uses for payload structure, field mappings, and API behavior. The anti-hallucination guardrails restrict the AI to ONLY these references.",
+
+  "_comment_webhooks_payload_change_blog": "PAYLOAD CHANGE BLOG — Intuit blog post announcing the upcoming migration from the legacy webhooks JSON format to the CloudEvents envelope. The AI references this to explain WHY the migration is happening and what changed.",
+  "webhooks_payload_change_blog": "https://blogs.intuit.com/2025/11/12/upcoming-change-to-webhooks-payload-structure/",
+
+  "_comment_enhanced_webhooks_monitoring": "ENHANCED WEBHOOKS MONITORING — Medium article describing the new monitoring dashboard and retry improvements for webhooks. Provides context for Task 3 (observability and error handling).",
+  "enhanced_webhooks_monitoring": "https://medium.com/intuitdev/introducing-enhanced-webhooks-monitoring-e29088948b0b",
+
+  "_comment_cloudevents_spec": "CLOUDEVENTS SPEC — The official CloudEvents specification site. The AI uses this to validate envelope structure, required attributes (type, source, specversion, id), and extension attributes.",
+  "cloudevents_spec": "https://cloudevents.io/",
+
+  "_comment_developer_portal_url": "DEVELOPER PORTAL — Root URL for the Intuit Developer portal. Used as the base for OAuth, app management, and sandbox links referenced throughout the prompt.",
+  "developer_portal_url": "https://developer.intuit.com",
+
+  "_comment_webhooks_documentation": "WEBHOOKS DOCUMENTATION — The official QuickBooks webhooks developer guide. The AI treats this as the canonical source for endpoint setup, event types, and payload schemas.",
+  "webhooks_documentation": "https://developer.intuit.com/app/developer/qbo/docs/develop/webhooks",
+
+  "_comment_signature_header": "SIGNATURE HEADER — The HTTP header name Intuit uses to deliver the HMAC signature on each webhook request. Task 1 searches the codebase for this header to locate existing verification logic.",
+  "signature_header": "intuit-signature",
+
+  "_comment_signature_algorithm": "SIGNATURE ALGORITHM — The hashing algorithm used to compute the webhook signature. Task 5 uses this to generate test curl commands with a valid HMAC so the developer can verify their endpoint locally.",
+  "signature_algorithm": "HMAC-SHA256",
+
+  "_comment_verifier_token_config_key": "VERIFIER TOKEN CONFIG KEY — The property/config key where the app stores its webhook verifier token (the shared secret from the Intuit Developer portal). The AI looks for this key in config files during Task 1.",
+  "verifier_token_config_key": "quickbooks.webhooks-verifier-token"
+}

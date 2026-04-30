@@ -1,0 +1,205 @@
+# Intuit Developer Prompt Library
+
+A dynamic prompt generation toolkit that helps developers build Intuit Enterprise Suite (IES) and QuickBooks integrations faster. Configure your target language, transaction type, and custom instructions — then generate AI-ready prompts that produce working integration code with proper API usage, error handling, and documentation.
+
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) (v14 or later)
+- A valid Intuit Developer account and application with OAuth 2.0 credentials
+- Access to an IES or QuickBooks Advanced sandbox/production company
+
+## Quick Start
+
+```bash
+# 1. Clone the repository
+git clone <repo-url>
+cd 3p-prompt-library
+
+# 2. Configure your settings
+#    Edit prompt-config.json (see Configuration section below)
+
+# 3. Generate prompts
+node merge-prompt.js
+
+# Or use a custom config profile
+node merge-prompt.js --config config-java-bill.json
+```
+
+This produces two ready-to-use prompt files:
+
+| Generated File | Use Case |
+|---|---|
+| `generated-prompts/dimensions-ready-prompt.md` | Dimensions API — tag transactions with custom dimensions |
+| `generated-prompts/projects-ready-prompt.md` | Projects API — create projects and project estimates |
+
+Copy the contents of a generated prompt into your preferred AI coding assistant (e.g., Copilot, Cursor, ChatGPT, Windsurf) to generate a complete, runnable integration project.
+
+## Project Structure
+
+```
+3p-prompt-library/
+├── prompt-config.json              # Configuration — your customizable settings
+├── prompt-config.schema.json       # JSON Schema — validates config before merge
+├── merge-prompt.js                 # Prompt generator script
+├── instructions.md                 # Reference — supported values & examples
+├── dimensions/
+│   └── prompt-template-dimensions.md   # Template — Dimensions API workflow
+├── projects/
+│   └── prompt-template-projects.md     # Template — Projects & Estimates workflow
+├── generated-prompts/
+│   ├── dimensions-ready-prompt.md      # Generated — Dimensions API prompt
+│   └── projects-ready-prompt.md        # Generated — Projects API prompt
+└── README.md                       # This file
+```
+
+## Configuration
+
+All settings live in `prompt-config.json`. The **first few keys** are the ones you configure; the rest are static API endpoints, queries, and documentation links that should not be changed.
+
+### Configurable Fields
+
+| # | Key | Description | Example |
+|---|-----|-------------|---------|
+| 1 | `integration_mode` | `"new"` (scaffold full project) or `"existing"` (importable modules only) | `"new"` |
+| 2 | `language_framework` | Target language/framework for generated code | `"Python3"`, `"TypeScript"`, `"Java"` |
+| 3 | `type_of_transaction` | QuickBooks transaction type | `"Estimate"`, `"Invoice"`, `"Bill"` |
+| 4 | `typing_system` | Type system style for the chosen language | `"hints (dataclasses)"`, `"Pydantic models"` |
+| 5 | `transaction_creation_instructions` | Instructions for creating a Dimensions-tagged transaction | See [examples](#transaction-instructions) |
+| 6 | `markup_percentages` | Markup % used for Project Estimate cost calculations | `"20"` |
+| 7 | `project_estimate_creation_instructions` | Instructions for creating a Project Estimate | See [examples](#transaction-instructions) |
+
+### Static Fields (do not modify)
+
+These include GraphQL/REST endpoints, API documentation URLs, query templates, and payload structures. They are maintained to stay in sync with the latest Intuit API surface.
+
+## Example Languages & Type Systems
+
+| Language | Typing System | Notes |
+|----------|--------------|-------|
+| Python | `hints (dataclasses)` | Native Python 3.9+ typing |
+| Python | `Pydantic models` | Runtime validation + serialization |
+| TypeScript | `TypeScript interfaces` | Static typing for Node.js |
+| TypeScript | `Zod schemas` | Runtime validation + type inference |
+| Java | `Java classes/records` | Enterprise standard |
+| Kotlin | `Kotlin data classes` | Concise, null-safe, JVM |
+| C# / .NET | `C# classes/records` | Enterprise, strong typing |
+| Go | `Go structs with tags` | Lightweight, microservices |
+| Rust | `Rust structs with serde` | Memory-safe, high performance |
+| Ruby | `Sorbet type annotations` | Optional typing for Ruby |
+| PHP | `PHP 8 typed properties` | Modern PHP with strict types |
+| Swift | `Swift structs/Codable` | iOS/macOS native |
+
+## Supported Transaction Types (With Dimensions values)
+
+`Bill` · `CreditMemo` · `Deposit` · `Estimate` · `Expense/Purchase` · `Invoice` · `JournalEntry` · `PurchaseOrder` · `RefundReceipt` · `SalesReceipt` · `VendorCredit`
+
+## Transaction Instructions
+
+The `transaction_creation_instructions` and `project_estimate_creation_instructions` fields accept free-form text describing how the transaction should be created. You can specify default entity IDs, amounts, SDK preferences, or custom instructions.
+
+**Example — simple Estimate:**
+```json
+"transaction_creation_instructions": "Create Estimate with default item id: 1 and default customer: 1 and Estimate amount: 111."
+```
+
+**Example — Bill with Java SDK:**
+```json
+"transaction_creation_instructions": "Create Bill with default item id: 2 and default vendor: 28 and Bill amount: 100 and APAccountRef=20. For REST API calls, use the Intuit official Java SDK at {{java-sdk-official}} with Graddle dependency. Use all the latest versions and best practices for SDK intetgration. Refer to the official documentation at: {{java-sdk-documentation}} and {{oauth2-documentation}}. Use appropriatemethods from SDKs only, do not hallucinate or make up methods that don't exist in the SDK. "
+```
+
+**Example — Project Estimate with markup:**
+```json
+"project_estimate_creation_instructions": "Create an Estimate with default item id: 1, UnitPrice: 1, Qty: 100, and ItemAccountRef=5. Amount=UnitPrice*Qty. CostAmount should be {{markup_percentage}} of Amount."
+```
+`markup_percentage` can have positive or negative values, indicating project profit or loss respectively.
+
+Refer to `instructions.md` for more detailed examples, including Purchase Order pre-checks and SDK-specific instructions.
+
+## How It Works
+
+```
+┌─────────────────────┐     ┌──────────────────────┐
+│  prompt-config.json │────▶│   merge-prompt.js    │
+│  (your settings)    │     │  (template engine)   │
+└─────────────────────┘     └──────┬───────┬───────┘
+                                   │       │
+              ┌────────────────────┘       └────────────────────┐
+              ▼                                                 ▼
+┌─────────────────────────────────────┐       ┌─────────────────────────────────┐
+│ dimensions/prompt-template-         │       │ projects/prompt-template-       │
+│ dimensions.md (Dimensions template) │       │ projects.md (Projects template) │
+└────────────┬────────────────────────┘       └────────────┬────────────────────┘
+             ▼                                           ▼
+┌──────────────────────────────────┐       ┌──────────────────────────────────┐
+│ generated-prompts/               │       │ generated-prompts/               │
+│ dimensions-ready-prompt.md       │       │ projects-ready-prompt.md         │
+│ (generated, AI-ready)            │       │ (generated, AI-ready)            │
+└──────────────────────────────────┘       └──────────────────────────────────┘
+```
+
+`merge-prompt.js` reads each template, replaces every `{{placeholder}}` with the corresponding value from `prompt-config.json`, and writes the result as a ready-to-use prompt file.
+
+### Safeguards
+
+- **Schema validation** — Before merging, the config is validated against `prompt-config.schema.json`. Missing required fields, wrong types, or invalid enum values cause an immediate error with a clear message.
+- **Unresolved placeholder check** — After merging, the script scans the output for any remaining `{{...}}` tokens and prints a warning listing them. This catches typos and missing config keys before you use the prompt.
+
+### Multi-Profile Configs
+
+You can maintain multiple config files for different language/transaction combinations:
+
+```bash
+# Default (uses prompt-config.json)
+node merge-prompt.js
+
+# Custom profile
+node merge-prompt.js --config config-java-bill.json
+node merge-prompt.js --config config-typescript-invoice.json
+```
+
+Create a new profile by copying `prompt-config.json` and changing the configurable fields.
+
+### Integration Mode (`integration_mode`)
+
+Controls whether the AI output targets a **new** (greenfield) project or an **existing** (brownfield) codebase.
+
+| Mode | `integration_mode` | What the AI produces |
+|------|-------------------|----------------------|
+| **New project** | `"new"` | A self-contained folder (`project-estimates-<lang>/` or `ies-dimensions-<lang>/`) with all source files, a `README.md`, dependency manifest, and architecture diagram. Ready to run standalone. |
+| **Existing project** | `"existing"` | Modular functions/classes/files with integration notes — which files to add, what imports are needed, and how to wire into your existing codebase. No scaffolding or folder structure imposed. |
+
+**Tip for existing projects:** After generating, review the integration notes in the output. The generated code uses the same API logic and pre-flight checks regardless of mode — the difference is packaging only.
+
+## What the Generated Prompts Produce
+
+When you feed a generated prompt to an AI assistant, the output will include:
+
+- **Modular integration code** in your chosen language/framework
+- **Pre-flight checks** — validates account type, country, and feature enablement
+- **GraphQL discovery** — fetches dimensions or projects from the Intuit API
+- **REST transaction creation** — creates tagged transactions with proper payload structure
+- **Read & hydrate logic** — retrieves and displays transactions with human-readable names
+- **Error handling** — 401 token refresh, 400 validation errors, GraphQL error parsing
+- **Observability** — structured logging with `intuit_tid` tracing
+- **README + architecture diagram** — included in `new` mode only
+
+## Prompt Templates
+
+### Dimensions (`dimensions/prompt-template-dimensions.md`)
+Generates code to discover IES Dimensions (custom categorization) via GraphQL, tag transactions with `CustomExtensions`, and display the results.
+
+### Projects & Estimates (`projects/prompt-template-projects.md`)
+Generates code to verify project eligibility, discover or create projects via GraphQL, create Project Estimates via REST, and display the results with markup calculations.
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| Unresolved `{{placeholder}}` in output | The script warns automatically; ensure the key exists in your config file with exact spelling and casing |
+| `node merge-prompt.js` fails | Verify Node.js is installed and you are running from the project root |
+| Generated code gets 401 errors | Refresh your OAuth 2.0 access token |
+| Generated code gets 403 on GraphQL | Your QuickBooks company may not support the feature (IES/Advanced required) |
+
+## License
+
+Internal use — Intuit Developer Relations.
