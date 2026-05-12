@@ -13,7 +13,7 @@ A dynamic prompt generation toolkit that helps developers build Intuit Enterpris
 ```bash
 # 1. Clone the repository
 git clone <repo-url>
-cd 3p-prompt-library
+cd Prompt-Library/discover
 
 # 2. Configure your settings
 #    Edit prompt-config.json (see Configuration section below)
@@ -65,7 +65,7 @@ All settings live in `prompt-config.json`. The **first few keys** are the ones y
 | 3 | `type_of_transaction` | QuickBooks transaction type | `"Estimate"`, `"Invoice"`, `"Bill"` |
 | 4 | `typing_system` | Type system style for the chosen language | `"hints (dataclasses)"`, `"Pydantic models"` |
 | 5 | `transaction_creation_instructions` | Instructions for creating a Dimensions-tagged transaction | See [examples](#transaction-instructions) |
-| 6 | `markup_percentages` | Markup % used for Project Estimate cost calculations | `"20"` |
+| 6 | `markup_percentages` | Markup % used for Project Estimate cost calculations (number; positive = profit, negative = loss) | `20` |
 | 7 | `project_estimate_creation_instructions` | Instructions for creating a Project Estimate | See [examples](#transaction-instructions) |
 
 ### Static Fields (do not modify)
@@ -104,7 +104,7 @@ The `transaction_creation_instructions` and `project_estimate_creation_instructi
 
 **Example — Bill with Java SDK:**
 ```json
-"transaction_creation_instructions": "Create Bill with default item id: 2 and default vendor: 28 and Bill amount: 100 and APAccountRef=20. For REST API calls, use the Intuit official Java SDK at {{java-sdk-official}} with Graddle dependency. Use all the latest versions and best practices for SDK intetgration. Refer to the official documentation at: {{java-sdk-documentation}} and {{oauth2-documentation}}. Use appropriatemethods from SDKs only, do not hallucinate or make up methods that don't exist in the SDK. "
+"transaction_creation_instructions": "Create Bill with default item id: 2 and default vendor: 28 and Bill amount: 100 and APAccountRef=20. For REST API calls, use the Intuit official Java SDK at {{java-sdk-official}} with Gradle dependency. Use all the latest versions and best practices for SDK integration. Refer to the official documentation at: {{java-sdk-documentation}} and {{oauth2-documentation}}. Use appropriate methods from SDKs only, do not hallucinate or make up methods that don't exist in the SDK. "
 ```
 
 **Example — Project Estimate with markup:**
@@ -202,4 +202,4 @@ Generates code to verify project eligibility, discover or create projects via Gr
 
 ## License
 
-Internal use — Intuit Developer Relations.
+MIT — see [LICENSE](../LICENSE) at the repo root.

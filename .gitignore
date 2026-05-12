@@ -1,0 +1,8 @@
+# OS
+.DS_Store
+
+# Generated prompt output (rebuilt by merge-prompt.js)
+workflows/webhooks-migration/ready-prompt.md
+
+# Node
+node_modules/

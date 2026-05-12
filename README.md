@@ -14,7 +14,18 @@ This library organizes prompts by workflow and topic so you can quickly find, co
 
 ---
 
-## 2. How to use the prompts (copy/paste)
+## 2. What's in this repo
+
+| Folder | What it does | When to use it |
+|---|---|---|
+| [`discover/`](./discover) | Generates AI-ready prompts that produce working integration code for the **Intuit Enterprise Suite (IES) Dimensions API** and **Projects & Estimates API**. Configure target language, transaction type, and instructions in `prompt-config.json`, then run `node merge-prompt.js` to produce a ready-to-paste prompt. | You're building a new (or extending an existing) IES/QBO Advanced integration and want a starting point that uses the right endpoints, payload structures, and error handling. |
+| [`workflows/webhooks-migration/`](./workflows/webhooks-migration) | Generates a guided migration prompt for moving a QuickBooks Online **webhook handler from the legacy payload to the CloudEvents format**. Supports Java, .NET, PHP, Node.js, and Python. The generated prompt detects the codebase's current state and routes to the right migration tasks. | You have an existing webhook handler that needs to accept the new CloudEvents envelope (or you want to verify your current implementation is correct). |
+
+Each folder has its own README with full setup, configuration, and usage details.
+
+---
+
+## 3. How to use the prompts (copy/paste)
 
 1. **Browse to a relevant folder**  
    Pick the workflow or topic that matches what you’re trying to do (for example, discovering APIs, managing webhooks, running a migration, etc.).
@@ -38,7 +49,7 @@ This library organizes prompts by workflow and topic so you can quickly find, co
 
 ---
 
-## 3. Using prompts locally with `@` references
+## 4. Using prompts locally with `@` references
 
 Many AI tools and IDE assistants let you reference local files using `@` (for example, `@filename` or `@path/to/file`). You can use this pattern with this prompt library.
 
@@ -52,15 +63,15 @@ Many AI tools and IDE assistants let you reference local files using `@` (for ex
 
 3. **Reference a prompt with `@`**
    - In your AI chat, type something like:
-     - `@workflows/change-management/webhooks-migration/java/manageWebhooksMigration.md`
-     - or shorter, if your tool supports it: `@manageWebhooksMigration.md`
+     - `@workflows/webhooks-migration/prompt-template.md`
+     - or shorter, if your tool supports it: `@prompt-template.md`
    - The exact syntax depends on your tool, but typically:
      - `@file-name` → references a file in the repo.
      - `@path/to/file.md` → references a nested file.
 
 4. **Add instructions on top of the `@` reference**
    - Example:
-     - `@workflows/change-management/webhooks-migration/java/manageWebhooksMigration.md`
+     - `@workflows/webhooks-migration/prompt-template.md`
      - `Use this prompt and apply it to my current Java service. Assume Gradle and Spring Boot.`
 
 5. **Edit prompts locally if needed**
@@ -71,7 +82,7 @@ Many AI tools and IDE assistants let you reference local files using `@` (for ex
 
 ---
 
-## 4. Best practices
+## 5. Best practices
 
 - **Be specific**: give concrete details (stack, language, framework, API version).
 - **Include context**: link or paste relevant code, logs, or docs.

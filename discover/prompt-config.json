@@ -29,7 +29,7 @@
 "php-sdk-documentation":"https://developer.intuit.com/app/developer/qbo/docs/develop/sdks-and-samples-collections/php/install-the-php-sdk AND https://developer.intuit.com/app/developer/qbo/docs/develop/sdks-and-samples-collections/php",
 "oauth2-documentation":"https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/oauth-2.0",
 "java-sdk-official": "https://central.sonatype.com/search?q=g:com.intuit.quickbooks-online&smo=true",
-"java-sdk-dependency":"Graddle",
+"java-sdk-dependency":"Gradle",
 "java-sdk-documentation": "https://developer.intuit.com/app/developer/qbo/docs/develop/sdks-and-samples-collections/java/install-the-java-sdk#jar-files",
 "minorversion":"75"
 }

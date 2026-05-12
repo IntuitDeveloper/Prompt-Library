@@ -44,10 +44,25 @@ function mergeTemplate(templateFile, outputFile) {
     }
     if (!changed) break;
   }
-  // Post-merge: check for unresolved placeholders
-  //const unresolved = [...new Set(prompt.match(/\{\{[a-zA-Z0-9_-]+\}\}/g) || [])];
   fs.writeFileSync(outputFile, prompt, 'utf8');
   console.log(`Generated ${outputFile}`);
+
+  // Post-merge: classify any remaining {{placeholders}}.
+  // - "unresolved" = name matches a config key but wasn't replaced (typo or merge bug)
+  // - "runtime" = name is not in config; expected, filled in at runtime by the AI
+  const remaining = [...new Set(prompt.match(/\{\{[a-zA-Z0-9_-]+\}\}/g) || [])];
+  const configKeys = new Set(Object.keys(config));
+  const unresolved = remaining.filter(p => configKeys.has(p.slice(2, -2)));
+  const runtime = remaining.filter(p => !configKeys.has(p.slice(2, -2)));
+  if (unresolved.length > 0) {
+    console.warn(`\nWarning: ${unresolved.length} unresolved config placeholder(s) in ${outputFile}:`);
+    unresolved.forEach(p => console.warn(`  - ${p}`));
+    console.warn('These exist in your config but were not replaced. Check for typos.');
+  }
+  if (runtime.length > 0) {
+    console.log(`Runtime placeholders (${runtime.length}) — expected, filled at runtime:`);
+    runtime.forEach(p => console.log(`  - ${p}`));
+  }
 }
 
 // --- Interactive prompt for selecting which prompt to generate ---
