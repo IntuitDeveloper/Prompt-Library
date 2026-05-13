@@ -18,19 +18,19 @@ cd Prompt-Library/discover
 # 2. Configure your settings
 #    Edit prompt-config.json (see Configuration section below)
 
-# 3. Generate prompts
+# 3. Generate a prompt (interactive — choose 1 for Dimensions, 2 for Projects)
 node merge-prompt.js
 
 # Or use a custom config profile
 node merge-prompt.js --config config-java-bill.json
 ```
 
-This produces two ready-to-use prompt files:
+The script prompts you to pick which template to generate. Run it twice to produce both:
 
-| Generated File | Use Case |
-|---|---|
-| `generated-prompts/dimensions-ready-prompt.md` | Dimensions API — tag transactions with custom dimensions |
-| `generated-prompts/projects-ready-prompt.md` | Projects API — create projects and project estimates |
+| Choice | Generated File | Use Case |
+|---|---|---|
+| `1` | `generated-prompts/dimensions-ready-prompt.md` | Dimensions API — tag transactions with custom dimensions |
+| `2` | `generated-prompts/projects-ready-prompt.md` | Projects API — create projects and project estimates |
 
 Copy the contents of a generated prompt into your preferred AI coding assistant (e.g., Copilot, Cursor, ChatGPT, Windsurf) to generate a complete, runnable integration project.
 
@@ -120,16 +120,17 @@ Refer to `instructions.md` for more detailed examples, including Purchase Order 
 ```
 ┌─────────────────────┐     ┌──────────────────────┐
 │  prompt-config.json │────▶│   merge-prompt.js    │
-│  (your settings)    │     │  (template engine)   │
-└─────────────────────┘     └──────┬───────┬───────┘
-                                   │       │
-              ┌────────────────────┘       └────────────────────┐
-              ▼                                                 ▼
+│  (your settings)    │     │  (asks: 1 or 2?)     │
+└─────────────────────┘     └──────────┬───────────┘
+                                       │
+                       ┌───────────────┴───────────────┐
+                  choice 1                         choice 2
+                       ▼                               ▼
 ┌─────────────────────────────────────┐       ┌─────────────────────────────────┐
 │ dimensions/prompt-template-         │       │ projects/prompt-template-       │
 │ dimensions.md (Dimensions template) │       │ projects.md (Projects template) │
 └────────────┬────────────────────────┘       └────────────┬────────────────────┘
-             ▼                                           ▼
+             ▼                                             ▼
 ┌──────────────────────────────────┐       ┌──────────────────────────────────┐
 │ generated-prompts/               │       │ generated-prompts/               │
 │ dimensions-ready-prompt.md       │       │ projects-ready-prompt.md         │
@@ -137,7 +138,7 @@ Refer to `instructions.md` for more detailed examples, including Purchase Order 
 └──────────────────────────────────┘       └──────────────────────────────────┘
 ```
 
-`merge-prompt.js` reads each template, replaces every `{{placeholder}}` with the corresponding value from `prompt-config.json`, and writes the result as a ready-to-use prompt file.
+`merge-prompt.js` reads the selected template, replaces every `{{placeholder}}` with the corresponding value from `prompt-config.json`, and writes the result as a ready-to-use prompt file. Run the script once per template you want to generate.
 
 ### Safeguards
 
@@ -196,7 +197,7 @@ Generates code to verify project eligibility, discover or create projects via Gr
 | Problem | Solution |
 |---------|----------|
 | Unresolved `{{placeholder}}` in output | The script warns automatically; ensure the key exists in your config file with exact spelling and casing |
-| `node merge-prompt.js` fails | Verify Node.js is installed and you are running from the project root |
+| `node merge-prompt.js` fails | Verify Node.js is installed and you are running from the `discover/` directory (not the repo root) |
 | Generated code gets 401 errors | Refresh your OAuth 2.0 access token |
 | Generated code gets 403 on GraphQL | Your QuickBooks company may not support the feature (IES/Advanced required) |
 

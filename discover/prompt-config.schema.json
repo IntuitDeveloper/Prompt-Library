@@ -100,6 +100,26 @@
       "type": "string",
       "description": "REST V3 endpoint for reading a transaction"
     },
+    "transaction_v3_estimate_api_endpoint": {
+      "type": "string",
+      "description": "REST V3 endpoint for creating a Project Estimate"
+    },
+    "get_estimate_transaction_endpoint": {
+      "type": "string",
+      "description": "REST V3 endpoint for reading a Project Estimate"
+    },
+    "rest_baseurl_production": {
+      "type": "string",
+      "description": "Production REST API base URL (host only, no scheme)"
+    },
+    "rest_baseurl_sandbox": {
+      "type": "string",
+      "description": "Sandbox REST API base URL (host only, no scheme)"
+    },
+    "minorversion": {
+      "type": "string",
+      "description": "QuickBooks REST API minorversion to use in query strings"
+    },
     "company_info_rest_v3_api_endpoint": {
       "type": "string",
       "description": "REST V3 endpoint for querying CompanyInfo"

@@ -28,13 +28,13 @@ Each folder has its own README with full setup, configuration, and usage details
 ## 3. How to use the prompts (copy/paste)
 
 1. **Browse to a relevant folder**  
-   Pick the workflow or topic that matches what you’re trying to do (for example, discovering APIs, managing webhooks, running a migration, etc.).
+   Pick the workflow or topic that matches what you're trying to do (for example, discovering APIs, managing webhooks, running a migration, etc.).
 
 2. **Open a prompt file**  
    Read the description at the top to confirm it fits your use case.
 
 3. **Copy the prompt text**  
-   Copy everything under the main “Prompts” (or similar) heading.
+   Copy everything under the main "Prompts" (or similar) heading.
 
 4. **Customize placeholders**  
    Replace any placeholder text (for example: `<your app name>`, `<project id>`, `<API key>`, or bracketed variables) with your own details.
@@ -44,8 +44,8 @@ Each folder has its own README with full setup, configuration, and usage details
    - Add any extra context (code snippets, logs, links) as needed.
 
 6. **Iterate**  
-   - If the response isn’t quite right, refine inputs (more context, narrower scope).
-   - Save new or refined prompt variants back into this repo if they’re reusable.
+   - If the response isn't quite right, refine inputs (more context, narrower scope).
+   - Save new or refined prompt variants back into this repo if they're reusable.
 
 ---
 
@@ -78,7 +78,7 @@ Many AI tools and IDE assistants let you reference local files using `@` (for ex
    - Tweak the `.md` file to better match your app or environment.
    - Re‑run the same `@file` reference; your tool will pick up the updated content.
 
-> **Note:** Exact `@` behavior varies by tool. If `@file` doesn’t work, check your AI/IDE assistant’s docs for how it resolves local file references.
+> **Note:** Exact `@` behavior varies by tool. If `@file` doesn't work, check your AI/IDE assistant's docs for how it resolves local file references.
 
 ---
 
@@ -86,5 +86,5 @@ Many AI tools and IDE assistants let you reference local files using `@` (for ex
 
 - **Be specific**: give concrete details (stack, language, framework, API version).
 - **Include context**: link or paste relevant code, logs, or docs.
-- **Keep scope small**: ask for one clear outcome at a time (e.g., “design a migration plan” before “implement everything”).
+- **Keep scope small**: ask for one clear outcome at a time (e.g., "design a migration plan" before "implement everything").
 - **Treat prompts as templates**: tweak wording to match your own voice and needs.
