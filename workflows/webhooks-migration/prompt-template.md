@@ -65,7 +65,7 @@ Detected: [language] / [framework] / [build tool]
 SDK: [QuickBooks SDK name and version, or "not found"]
 ```
 
-Cross-check the detected framework against `{{language_framework}}`. If they don't match, flag the discrepancy and ask the user to confirm before proceeding.
+Cross-check the detected framework against `{{language_framework}}` and the detected build tool against `{{build_tool}}`. If either doesn't match, flag the discrepancy and ask the user to confirm before proceeding.
 
 Do NOT proceed until the framework is confirmed. All subsequent code snippets must use idioms, patterns, and libraries appropriate for the detected framework.
 
@@ -82,7 +82,7 @@ Do NOT proceed until the framework is confirmed. All subsequent code snippets mu
 Scan the codebase and identify:
 
 1. **Webhook endpoint** — the controller/route receiving `POST` requests from Intuit (look for `{{signature_header}}` header handling).
-2. **Signature verification** — where {{signature_algorithm}} validation occurs and how the verifier token is configured.
+2. **Signature verification** — where {{signature_algorithm}} validation occurs and how the verifier token is configured. Search config files for the key `{{verifier_token_config_key}}` to locate where the verifier token is stored.
 3. **Payload deserialization** — where the event object is parsed (SDK classes or manual JSON parsing). Note whether it parses legacy format, CloudEvents format, or both.
 4. **Field access** — all places webhook fields are extracted. Note which field set is used:
    - Legacy: `realmId`, entity `name`, `id`, `operation`, `lastUpdated`
@@ -157,7 +157,7 @@ For states that say "verify only," confirm the existing implementation is correc
 
 ## Task 2: Update SDK & Implement CloudEvents Parsing
 
-**If LEGACY ONLY:** Update the SDK to {{sdk_minimum_version}} or later. Refer to the SDK source at {{sdk_source}} for the CloudEvents parsing class ({{sdk_cloudevents_class}} in {{sdk_data_package}}) and method signatures.
+**If LEGACY ONLY:** Update the SDK to {{sdk_minimum_version}} or later. Refer to the SDK source at {{sdk_source}} for the CloudEvents parsing class ({{sdk_cloudevents_class}} in {{sdk_data_package}}) and method signatures. Service classes (API calls, data fetching) live in {{sdk_service_package}}.
 
 Using the SDK source and the field mappings documented in the [webhooks payload change announcement]({{webhooks_payload_change_blog}}):
 
