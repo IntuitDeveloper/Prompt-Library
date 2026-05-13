@@ -37,7 +37,7 @@ Copy the contents of a generated prompt into your preferred AI coding assistant 
 ## Project Structure
 
 ```
-3p-prompt-library/
+Prompt-Library/discover/
 ├── prompt-config.json              # Configuration — your customizable settings
 ├── prompt-config.schema.json       # JSON Schema — validates config before merge
 ├── merge-prompt.js                 # Prompt generator script
@@ -109,9 +109,9 @@ The `transaction_creation_instructions` and `project_estimate_creation_instructi
 
 **Example — Project Estimate with markup:**
 ```json
-"project_estimate_creation_instructions": "Create an Estimate with default item id: 1, UnitPrice: 1, Qty: 100, and ItemAccountRef=5. Amount=UnitPrice*Qty. CostAmount should be {{markup_percentage}} of Amount."
+"project_estimate_creation_instructions": "Create an Estimate with default item id: 1, UnitPrice: 1, Qty: 100, and ItemAccountRef=5. Amount=UnitPrice*Qty. CostAmount should be {{markup_percentages}} of Amount."
 ```
-`markup_percentage` can have positive or negative values, indicating project profit or loss respectively.
+`markup_percentages` can have positive or negative values, indicating project profit or loss respectively.
 
 Refer to `instructions.md` for more detailed examples, including Purchase Order pre-checks and SDK-specific instructions.
 

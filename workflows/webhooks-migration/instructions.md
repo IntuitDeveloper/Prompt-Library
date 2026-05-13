@@ -26,7 +26,7 @@ The prompt **detects** your state automatically — you don't need to know which
 ## Directory Structure
 
 ```
-webhooks-cloudevents/
+webhooks-migration/
 ├── prompt-template.md          # The prompt with {{variables}} — DO NOT edit for per-run changes
 ├── prompt-config.json          # Universal config — shared values + language maps
 ├── merge-prompt.js             # Build script — picks language, resolves {{vars}}, generates ready-prompt.md
@@ -47,7 +47,7 @@ webhooks-cloudevents/
 ### 1. Generate the prompt
 
 ```bash
-cd webhooks-cloudevents
+cd workflows/webhooks-migration
 
 # Uses the "language" key in prompt-config.json (default: java)
 node merge-prompt.js
@@ -62,13 +62,13 @@ node merge-prompt.js python
 You should see:
 ```
 ✅ Generated: ready-prompt.md
-   Desktop:   ~/Desktop/ready-prompt-webhooks-cloudevents.md
+   Desktop:   ~/Desktop/ready-prompt-webhooks-migration.md
    Language:  java
    Resolved:  14 variables (34 replacements)
    Unresolved: 0 — all config variables resolved.
 ```
 
-The prompt is also copied to your Desktop as `ready-prompt-webhooks-cloudevents.md` for easy access.
+The prompt is also copied to your Desktop as `ready-prompt-webhooks-migration.md` for easy access.
 
 If you see unresolved variables, add them to your config file before proceeding.
 
@@ -266,7 +266,7 @@ After running the prompt against a codebase, verify each task:
 
 | Problem | Cause | Fix |
 |---|---|---|
-| `Config file not found` | Wrong filename or path | Check spelling, run from the `webhooks-cloudevents/` directory |
+| `Config file not found` | Wrong filename or path | Check spelling, run from the `workflows/webhooks-migration/` directory |
 | `Template file not found` | `prompt-template.md` missing | Ensure you're in the correct directory |
 | Unresolved variables in output | Config missing a key | Add the missing key to your config JSON |
 | AI says "STOP — missing references" | `ready-prompt.md` has `{{vars}}` | Re-run `merge-prompt.js`, check for unresolved count |
