@@ -45,8 +45,29 @@ Examples of {{transaction_creation_instructions}} that can be used to configure 
 }
 
 
+Configuring the Custom Fields prompt (choice 3 in merge-prompt.js):
+----------------------------
+The Custom Fields prompt has ONE free-form field you configure:
+  custom_field_transaction_creation_instructions — how to create the transaction that carries the custom field values (default item/customer/amount, which DefinitionId to attach). Reuses {{type_of_transaction}}.
+Everything else (GraphQL queries, mutations, payload structure, scope) is a static field maintained to match the API surface — do not change it.
+Notes:
+  - Silver+ partner tier required — Builder-tier apps receive 403 Forbidden.
+  - The Custom Fields GraphQL API is production-only (no documented sandbox endpoint); test with free non-expiring partner test accounts. REST V3 read/write calls still support sandbox.
+  - REST V3 payloads must set DefinitionId = legacyIDV2 (the numeric id from the GraphQL definition), not the opaque id.
+
+Configuring the Sales Tax prompt (choice 4 in merge-prompt.js):
+----------------------------
+The Sales Tax prompt has NO free-form configurable fields — it is driven entirely by static fields (the calculate mutation, its variables example, scope, and documentation links).
+Notes:
+  - Requires the OAuth scope: indirect-tax.tax-calculation.quickbooks
+  - Calculation-only — the API returns a tax calculation; it does not create or post a transaction.
+
+
  ### Author, use-case, API version, last-tested date (Template registries)
  Intuit Developer, Dimensions API, v1, 2026-03-30
+ Intuit Developer, Projects API, v1, 2026-03-30
+ Intuit Developer, Custom Fields API, v1, 2026-07-16
+ Intuit Developer, Sales Tax API, v1, 2026-07-16
 
 
 

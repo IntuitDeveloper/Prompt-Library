@@ -175,6 +175,82 @@
     "java-sdk-documentation": {
       "type": "string",
       "description": "URL to Java SDK installation documentation"
+    },
+    "custom_field_documentation": {
+      "type": "string",
+      "description": "URL to the Custom Fields use-case documentation"
+    },
+    "custom_field_scope_readwrite": {
+      "type": "string",
+      "description": "OAuth scope required for read/write access to custom field definitions"
+    },
+    "custom_field_definitions_query": {
+      "type": "string",
+      "description": "GraphQL query for fetching custom field definitions"
+    },
+    "custom_field_create_definition_mutation": {
+      "type": "string",
+      "description": "GraphQL mutation for creating a custom field definition"
+    },
+    "custom_field_create_definition_variables_example": {
+      "type": "string",
+      "description": "Example variables payload for the create custom field definition mutation"
+    },
+    "custom_field_update_definition_mutation": {
+      "type": "string",
+      "description": "GraphQL mutation for updating a custom field definition"
+    },
+    "custom_field_update_definition_variables_example": {
+      "type": "string",
+      "description": "Example variables payload for the update custom field definition mutation"
+    },
+    "custom_field_disable_variables_example": {
+      "type": "string",
+      "description": "Example variables payload for disabling a custom field definition"
+    },
+    "custom_field_payload_structure": {
+      "type": "string",
+      "description": "JSON shape of the custom field values attached to a transaction"
+    },
+    "custom_field_transaction_creation_instructions": {
+      "type": "string",
+      "description": "Free-form instructions for creating a transaction with custom field values"
+    },
+    "custom_field_sample_app_java": {
+      "type": "string",
+      "description": "URL to the official Custom Fields Java sample app"
+    },
+    "custom_field_sample_app_python": {
+      "type": "string",
+      "description": "URL to the official Custom Fields Python sample app"
+    },
+    "sales_tax_documentation": {
+      "type": "string",
+      "description": "URL to the Sales Tax use-case documentation"
+    },
+    "sales_tax_scope": {
+      "type": "string",
+      "description": "OAuth scope required for the Sales Tax calculation API"
+    },
+    "sales_tax_calculate_mutation": {
+      "type": "string",
+      "description": "GraphQL mutation for calculating sale transaction tax"
+    },
+    "sales_tax_calculate_variables_example": {
+      "type": "string",
+      "description": "Example variables payload for the sales tax calculation mutation"
+    },
+    "sales_tax_sample_app_java": {
+      "type": "string",
+      "description": "URL to the official Sales Tax Java sample app"
+    },
+    "sales_tax_sample_app_python": {
+      "type": "string",
+      "description": "URL to the official Sales Tax Python sample app"
+    },
+    "sales_tax_sample_app_nodejs": {
+      "type": "string",
+      "description": "URL to the official Sales Tax Node.js sample app"
     }
   },
   "additionalProperties": false

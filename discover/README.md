@@ -18,19 +18,21 @@ cd Prompt-Library/discover
 # 2. Configure your settings
 #    Edit prompt-config.json (see Configuration section below)
 
-# 3. Generate a prompt (interactive — choose 1 for Dimensions, 2 for Projects)
+# 3. Generate a prompt (interactive — choose 1–4)
 node merge-prompt.js
 
 # Or use a custom config profile
 node merge-prompt.js --config config-java-bill.json
 ```
 
-The script prompts you to pick which template to generate. Run it twice to produce both:
+The script prompts you to pick which template to generate. Run it once per template you need:
 
 | Choice | Generated File | Use Case |
 |---|---|---|
 | `1` | `generated-prompts/dimensions-ready-prompt.md` | Dimensions API — tag transactions with custom dimensions |
 | `2` | `generated-prompts/projects-ready-prompt.md` | Projects API — create projects and project estimates |
+| `3` | `generated-prompts/custom-fields-ready-prompt.md` | Custom Fields API — discover, attach, and read custom field values |
+| `4` | `generated-prompts/sales-tax-ready-prompt.md` | Sales Tax API — calculate sale transaction tax |
 
 Copy the contents of a generated prompt into your preferred AI coding assistant (e.g., Copilot, Cursor, ChatGPT, Windsurf) to generate a complete, runnable integration project.
 
@@ -43,12 +45,18 @@ Prompt-Library/discover/
 ├── merge-prompt.js                 # Prompt generator script
 ├── instructions.md                 # Reference — supported values & examples
 ├── dimensions/
-│   └── prompt-template-dimensions.md   # Template — Dimensions API workflow
+│   └── prompt-template-dimensions.md       # Template — Dimensions API workflow
 ├── projects/
-│   └── prompt-template-projects.md     # Template — Projects & Estimates workflow
+│   └── prompt-template-projects.md         # Template — Projects & Estimates workflow
+├── custom-fields/
+│   └── prompt-template-custom-fields.md    # Template — Custom Fields API workflow
+├── sales-tax/
+│   └── prompt-template-sales-tax.md        # Template — Sales Tax calculation workflow
 ├── generated-prompts/
-│   ├── dimensions-ready-prompt.md      # Generated — Dimensions API prompt
-│   └── projects-ready-prompt.md        # Generated — Projects API prompt
+│   ├── dimensions-ready-prompt.md          # Generated — Dimensions API prompt
+│   ├── projects-ready-prompt.md            # Generated — Projects API prompt
+│   ├── custom-fields-ready-prompt.md       # Generated — Custom Fields API prompt
+│   └── sales-tax-ready-prompt.md           # Generated — Sales Tax API prompt
 └── README.md                       # This file
 ```
 
@@ -119,26 +127,23 @@ Refer to `instructions.md` for more detailed examples, including Purchase Order 
 
 ```
 ┌─────────────────────┐     ┌──────────────────────┐
-│  prompt-config.json │────▶│   merge-prompt.js    │
-│  (your settings)    │     │  (asks: 1 or 2?)     │
+│  prompt-config.json │────▶│    merge-prompt.js   │
+│  (your settings)    │     │   (asks: 1–4?)       │
 └─────────────────────┘     └──────────┬───────────┘
                                        │
-                       ┌───────────────┴───────────────┐
-                  choice 1                         choice 2
-                       ▼                               ▼
-┌─────────────────────────────────────┐       ┌─────────────────────────────────┐
-│ dimensions/prompt-template-         │       │ projects/prompt-template-       │
-│ dimensions.md (Dimensions template) │       │ projects.md (Projects template) │
-└────────────┬────────────────────────┘       └────────────┬────────────────────┘
-             ▼                                             ▼
-┌──────────────────────────────────┐       ┌──────────────────────────────────┐
-│ generated-prompts/               │       │ generated-prompts/               │
-│ dimensions-ready-prompt.md       │       │ projects-ready-prompt.md         │
-│ (generated, AI-ready)            │       │ (generated, AI-ready)            │
-└──────────────────────────────────┘       └──────────────────────────────────┘
+   ┌───────────────┬───────────────────┼───────────────────┬───────────────┐
+ choice 1        choice 2           choice 3            choice 4
+   ▼               ▼                   ▼                    ▼
+ dimensions/     projects/          custom-fields/       sales-tax/
+ prompt-         prompt-            prompt-              prompt-
+ template-       template-          template-            template-
+ dimensions.md   projects.md        custom-fields.md     sales-tax.md
+   │               │                   │                    │
+   ▼               ▼                   ▼                    ▼
+ generated-prompts/…-ready-prompt.md   (generated, AI-ready)
 ```
 
-`merge-prompt.js` reads the selected template, replaces every `{{placeholder}}` with the corresponding value from `prompt-config.json`, and writes the result as a ready-to-use prompt file. Run the script once per template you want to generate.
+`merge-prompt.js` reads the selected template, replaces every `{{placeholder}}` with the corresponding value from `prompt-config.json`, and writes the result as a ready-to-use prompt file to `generated-prompts/`. Run the script once per template you want to generate.
 
 ### Safeguards
 
@@ -191,6 +196,19 @@ Generates code to discover IES Dimensions (custom categorization) via GraphQL, t
 
 ### Projects & Estimates (`projects/prompt-template-projects.md`)
 Generates code to verify project eligibility, discover or create projects via GraphQL, create Project Estimates via REST, and display the results with markup calculations.
+
+### Custom Fields (`custom-fields/prompt-template-custom-fields.md`)
+Generates code to discover active custom field definitions via GraphQL, attach custom metadata to QuickBooks transactions (and `Customer`/`Vendor` entities) via REST V3, and read them back with human-readable labels.
+
+- **Silver+ partner tier required** — the Custom Fields API is a premium API; Builder-tier apps receive `403 Forbidden`.
+- **Production-only GraphQL** — the Custom Fields GraphQL API has no documented sandbox endpoint; test with free non-expiring partner test accounts. (The REST V3 read/write calls still support sandbox.)
+- **`legacyIDV2` bridge** — the GraphQL definition returns both `id` (opaque) and `legacyIDV2` (numeric); REST V3 payloads must set `DefinitionId = legacyIDV2`, not `id`.
+
+### Sales Tax (`sales-tax/prompt-template-sales-tax.md`)
+Generates code to calculate sale transaction tax via the GraphQL `indirectTaxCalculateSaleTransactionTax` mutation — computing per-line and aggregate tax from ship-from/ship-to addresses, line items, and shipping fees.
+
+- **Scope required** — `indirect-tax.tax-calculation.quickbooks`.
+- **Calculation-only** — the API returns a tax calculation; it does not itself create or post a transaction.
 
 ## Troubleshooting
 

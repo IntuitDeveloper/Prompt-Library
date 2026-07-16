@@ -1,6 +1,12 @@
 **Role:** You are a Principal Software Engineer specializing in Intuit Enterprise Suite (IES) integrations.
  
-**Context:** I am developing a `python` application. I need to implement a workflow that uses the IES Dimensions APIs to tag `salesreceipt`. Assume the application already has a valid OAuth 2.0 access token and IES realmId (Company ID) and environment (production or sandbox) available in the .env file. Focus strictly on the API integration logic.
+**Context:** I am developing a `python` application. I need to implement a workflow that uses the IES Dimensions APIs to tag `salesreceipt`. Assume the application already has a valid OAuth 2.0 access token and IES realmId (Company ID) and environment (production or sandbox) available in the `.env` file. Focus strictly on the API integration logic.
+
+**References:**
+- Dimensions documentation: `https://developer.intuit.com/app/developer/ies/docs/workflows/manage-dimensions/dimensions-use-cases`
+- GraphQL schema reference: `https://developer.intuit.com/app/developer/gql/docs/api/qbexternal/queries/`
+- REST V3 API documentation: `https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/salesreceipt`
+- OAuth 2.0 documentation: `https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/oauth-2.0`
  
 ---
  
@@ -74,7 +80,7 @@ Create salesreceipt with default item id : 1 and default customer : 1 and salesr
  
 ### API Details:
 - **Endpoint:** `POST /v3/company/{{companyid}}/salesreceipt?minorversion=75`
-- **Documentation:** Refer to `https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/account` and `https://developer.intuit.com/app/developer/ies/docs/workflows/manage-dimensions/dimensions-use-cases`
+- **Documentation:** Refer to `https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/salesreceipt` and `https://developer.intuit.com/app/developer/ies/docs/workflows/manage-dimensions/dimensions-use-cases`
  
 ### Payload Structure:
 Ensure the Line items include the `CustomExtensions` array exactly as follows:
