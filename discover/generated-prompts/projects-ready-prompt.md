@@ -2,6 +2,12 @@
 
 **Context:** I am developing a `python` application. I need to implement a workflow that uses the Projects APIs to create a project and generate project estimates for IES or QuickBooks Advanced companies. Assume the application already has a valid OAuth 2.0 access token, realmId (Company ID), and environment (production or sandbox) available in the `.env` file. Focus strictly on the API integration logic.
 
+**References:**
+- Project Estimate documentation: `https://developer.intuit.com/app/developer/qbo/docs/workflows/manage-projects/use-cases#use-case-5`
+- GraphQL schema reference: `https://developer.intuit.com/app/developer/gql/docs/api/qbexternal/queries/`
+- REST V3 API documentation: `https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/salesreceipt`
+- OAuth 2.0 documentation: `https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/oauth-2.0`
+
 ---
 
 ## Task 1: Pre-flight & Discovery
@@ -65,7 +71,7 @@ Create an estimate with default item id : 1 ,UnitPrice: 1, Qty: 100, and ItemAcc
 
 ### API Details:
 - **Endpoint:** `POST /v3/company/{{companyid}}/estimate?minorversion=75`
-- **Documentation:** Refer to `https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/account` and `https://developer.intuit.com/app/developer/qbo/docs/workflows/manage-projects/use-cases#use-case-5`
+- **Documentation:** Refer to `https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/salesreceipt` and `https://developer.intuit.com/app/developer/qbo/docs/workflows/manage-projects/use-cases#use-case-5`
 
 ### Payload Structure:
 Ensure the Estimate request body includes **both** `ProjectRef` and `CustomerRef` at the top level, exactly as follows:

@@ -1,12 +1,12 @@
 **Role:** You are a Principal Software Engineer specializing in QuickBooks Online integrations.
 
-**Context:** I am developing a `{{language_framework}}` application using `{{typing_system}}` typing. I need to implement a workflow that uses the QuickBooks Custom Fields APIs to attach custom metadata to `{{type_of_transaction}}` transactions (and/or to `Customer` / `Vendor` / `Project` entities, depending on QBO tier). Assume the application already has a valid OAuth 2.0 access token, realmId (Company ID), and environment (production or sandbox) available in the `.env` file. Note: the Custom Fields GraphQL API is production-only — Tasks 1, 4, and 5 always target production regardless of `QBO_ENV`. Tasks 2 and 3 (REST V3) honor `QBO_ENV`. Focus strictly on the API integration logic.
+**Context:** I am developing a `python` application using `hints (dataclasses)` typing. I need to implement a workflow that uses the QuickBooks Custom Fields APIs to attach custom metadata to `salesreceipt` transactions (and/or to `Customer` / `Vendor` / `Project` entities, depending on QBO tier). Assume the application already has a valid OAuth 2.0 access token, realmId (Company ID), and environment (production or sandbox) available in the `.env` file. Note: the Custom Fields GraphQL API is production-only — Tasks 1, 4, and 5 always target production regardless of `QBO_ENV`. Tasks 2 and 3 (REST V3) honor `QBO_ENV`. Focus strictly on the API integration logic.
 
 **References:**
-- Custom Fields documentation: `{{custom_field_documentation}}`
-- GraphQL schema reference: `{{graphql_schema}}`
-- OAuth 2.0 documentation: `{{oauth2-documentation}}`
-- Official sample apps: `{{custom_field_sample_app_java}}` · `{{custom_field_sample_app_python}}`
+- Custom Fields documentation: `https://developer.intuit.com/app/developer/qbo/docs/workflows/create-custom-fields`
+- GraphQL schema reference: `https://developer.intuit.com/app/developer/gql/docs/api/qbexternal/queries/`
+- OAuth 2.0 documentation: `https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/oauth-2.0`
+- Official sample apps: `https://github.com/IntuitDeveloper/SampleApp-CustomFields-Java` · `https://github.com/IntuitDeveloper/SampleApp-CustomFields-Python`
 
 ---
 
@@ -16,9 +16,39 @@
 
 Fetch all active definitions, then filter client-side by `associations[].associatedEntity` to find the ones relevant to your target entity.
 
-- **Endpoint:** `{{graphql_endpoint_production}}` (production-only — no sandbox).
+- **Endpoint:** `https://qb.api.intuit.com/graphql` (production-only — no sandbox).
 - **Headers:** `Authorization: Bearer <token>`, `Content-Type: application/json`, `realmId: <QBO_REALM_ID>`, and a unique `intuit_tid` per request for log correlation.
-- **Query:** `{{custom_field_definitions_query}}`
+- **Query:** `query GetCustomFieldDefinitions($cursor: String) {
+  appFoundationsCustomFieldDefinitions(
+    filters: { active: true }
+    first: 50
+    after: $cursor
+  ) {
+    edges {
+      node {
+        id
+        legacyID
+        legacyIDV2
+        label
+        dataType
+        required
+        active
+        colorCode
+        entityVersion
+        createdSource
+        dropDownOptions { id value active order }
+        associations {
+          associatedEntity
+          associationCondition
+          active
+          allowedOperations
+          subAssociations { associatedEntity active allowedOperations }
+        }
+      }
+    }
+    pageInfo { hasNextPage hasPreviousPage startCursor endCursor }
+  }
+}`
 - **Variables:** `{ "cursor": null }` on the first call; pass `{ "cursor": "<endCursor>" }` while `pageInfo.hasNextPage` is `true`.
 
 ### Extract per definition node
@@ -36,13 +66,13 @@ Fetch all active definitions, then filter client-side by `associations[].associa
 
 Build an in-memory map keyed by `legacyIDV2` storing `label`, `dataType`, `dropDownOptions`, and `associations`. Handle pagination until `pageInfo.hasNextPage` is `false`.
 
-**Empty State:** If no definitions match the target entity after client-side filtering, surface: *"No active Custom Field definitions found for `{{type_of_transaction}}`. Configure them in QuickBooks settings, or run Task 4 (create)."*
+**Empty State:** If no definitions match the target entity after client-side filtering, surface: *"No active Custom Field definitions found for `salesreceipt`. Configure them in QuickBooks settings, or run Task 4 (create)."*
 
 ---
 
 ## Task 2: Attach Custom Field Values to a Transaction or Entity (REST V3)
 
-{{custom_field_transaction_creation_instructions}}
+Create one salesreceipt with default item id: 1, default customer: 1, and amount: 111. Attach at least one custom field value using a DefinitionId discovered in Task 1.
 
 ### Data flow for the CustomField array
 
@@ -62,18 +92,25 @@ Set exactly one value field per `CustomField` entry.
 
 ### API Details
 
-- **Endpoint:** `{{transaction_v3_api_endpoint}}`
+- **Endpoint:** `POST /v3/company/{{companyid}}/salesreceipt?minorversion=75`
 - **Required query parameter:** Append `include=enhancedAllCustomFields` to every create/read URL — without it, the response will not include custom-field metadata.
-- **Documentation:** `{{rest_v3_api_documentation}}` and `{{custom_field_documentation}}`
+- **Documentation:** `https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/salesreceipt` and `https://developer.intuit.com/app/developer/qbo/docs/workflows/create-custom-fields`
 
 ### Payload structure
 
 ```json
-{{custom_field_payload_structure}}
+[
+  {
+    "DefinitionId": "{{DefinitionId}}",
+    "Name": "{{FieldName}}",
+    "Type": "StringType",
+    "StringValue": "{{FieldValue}}"
+  }
+]
 ```
 
 **Constraints:**
-- Use `minorversion={{minorversion}}` on all REST V3 calls.
+- Use `minorversion=75` on all REST V3 calls.
 - `DefinitionId` must be a `legacyIDV2` from Task 1 — do not invent or hardcode IDs.
 - REST V3 **silently drops** `CustomField` entries whose `DefinitionId` doesn't match the target entity's sub-association exactly (e.g. a definition scoped to `SALE` won't attach to an Invoice — only `SALE_INVOICE` will). HTTP 200 returns with the dropped entries omitted and no error. **Compare the response's `CustomField` array against the request and warn on any drops.**
 
@@ -83,7 +120,7 @@ Set exactly one value field per `CustomField` entry.
 
 Retrieve the entity and display custom field values with human-readable labels.
 
-- **Fetch:** Use `{{get_transaction_endpoint}}` and append `include=enhancedAllCustomFields`.
+- **Fetch:** Use `GET /v3/company/{{companyid}}/salesreceipt/{{TransactionId}}` and append `include=enhancedAllCustomFields`.
 - **Hydration:** For each `CustomField` in the response, look up `DefinitionId` (= `legacyIDV2`) in the Task 1 map to get `label` and `dataType`.
 - **Type-aware reading:** Use the cached `dataType` to read the matching value field (`StringValue` / `NumberValue` / `DateValue`). Parse `DateValue` as `YYYY-MM-DD`.
 - **Display:** Show the entity ID, date, total amount, and a labelled list of custom fields and their values.
@@ -93,12 +130,46 @@ Retrieve the entity and display custom field values with human-readable labels.
 
 ## Task 4 (optional): Create a New Custom Field Definition (GraphQL)
 
-Use only when your app provisions custom fields as part of onboarding. Requires the `{{custom_field_scope_readwrite}}` scope.
+Use only when your app provisions custom fields as part of onboarding. Requires the `app-foundations.custom-field-definitions` scope.
 
-- **Mutation:** `{{custom_field_create_definition_mutation}}`
+- **Mutation:** `mutation CreateCustomFieldDefinition($input: AppFoundations_CustomFieldDefinitionCreateInput!) {
+  appFoundationsCreateCustomFieldDefinition(input: $input) {
+    id
+    legacyIDV2
+    label
+    dataType
+    required
+    active
+    dropDownOptions { id value active order }
+    associations {
+      associatedEntity
+      associationCondition
+      active
+      allowedOperations
+      subAssociations { associatedEntity active allowedOperations }
+    }
+  }
+}`
 - **Variables:**
 ```json
-{{custom_field_create_definition_variables_example}}
+{
+  "input": {
+    "active": true,
+    "label": "Project Code",
+    "dataType": "STRING",
+    "associations": [
+      {
+        "active": true,
+        "associatedEntity": "/transactions/Transaction",
+        "associationCondition": "INCLUDED",
+        "allowedOperations": [],
+        "subAssociations": [
+          { "active": true, "associatedEntity": "SALE_INVOICE", "allowedOperations": [] }
+        ]
+      }
+    ]
+  }
+}
 ```
 
 ### Input field reference (`AppFoundations_CustomFieldDefinitionCreateInput`)
@@ -118,14 +189,42 @@ A single definition can attach to multiple parents (e.g. `/transactions/Transact
 
 The schema exposes **one mutation** for both — there's no separate disable mutation. Disable by calling update with `active: false`.
 
-- **Mutation:** `{{custom_field_update_definition_mutation}}`
+- **Mutation:** `mutation UpdateCustomFieldDefinition($input: AppFoundations_CustomFieldDefinitionUpdateInput!) {
+  appFoundationsUpdateCustomFieldDefinition(input: $input) {
+    id
+    legacyIDV2
+    label
+    dataType
+    active
+    required
+    associations {
+      associatedEntity
+      associationCondition
+      active
+      allowedOperations
+    }
+  }
+}`
 - **Variables (rename):**
 ```json
-{{custom_field_update_definition_variables_example}}
+{
+  "input": {
+    "id": "<udcf_short_id_from_task_1>",
+    "legacyIDV2": "<bare_numeric_legacyIDV2_from_task_1>",
+    "label": "Project Code (renamed)"
+  }
+}
 ```
 - **Variables (disable):**
 ```json
-{{custom_field_disable_variables_example}}
+{
+  "input": {
+    "id": "<udcf_short_id_from_task_1>",
+    "legacyIDV2": "<bare_numeric_legacyIDV2_from_task_1>",
+    "label": "<current_label_from_task_1>",
+    "active": false
+  }
+}
 ```
 
 ### Required input fields (service layer enforces all three even though the schema marks two optional)
@@ -150,9 +249,9 @@ Invalidate the Task 1 cache after a successful update.
   - **HTTP 200 with `errors[]`** — always inspect; a 200 doesn't mean success. Watch for `extensions.errorCode.errorCode` values like `AUTHORIZATION_DENIED` (missing write scope), `LABEL_LENGTH_EXCEEDED`, `MUTUAL_EXCLUSIVITY_IN_SUB_ASSOCIATIONS_VIOLATED`, `FIELD_MISSING`.
   - **Silent drops** — after every REST V3 create, compare the request's `CustomField` array against the response. Warn on missing entries.
 - **Observability:** Capture and log the `intuit_tid` header on every response. NEVER log access tokens, OAuth secrets, or PII.
-- **Typing:** Provide `{{typing_system}}` models for `CustomFieldDefinition`, `CustomField`, and (if using Task 4) `CustomFieldDefinitionCreateInput`.
-- **Output (integration mode: `{{integration_mode}}`):** Provide modular, clean code and a runnable verification example.
-  - **If mode is `new`:** Create a self-contained project in a dedicated folder named `custom-fields-{{language_framework}}` (no spaces). Include a `README.md` explaining how to run the code, a dependency manifest, and a brief architectural diagram showing the data flow from GraphQL to REST.
+- **Typing:** Provide `hints (dataclasses)` models for `CustomFieldDefinition`, `CustomField`, and (if using Task 4) `CustomFieldDefinitionCreateInput`.
+- **Output (integration mode: `new`):** Provide modular, clean code and a runnable verification example.
+  - **If mode is `new`:** Create a self-contained project in a dedicated folder named `custom-fields-python` (no spaces). Include a `README.md` explaining how to run the code, a dependency manifest, and a brief architectural diagram showing the data flow from GraphQL to REST.
   - **If mode is `existing`:** Produce modular, well-documented functions/classes/files designed to be imported into an existing codebase. Do **not** scaffold a new project structure. Provide clear integration notes describing which files to add, what imports are needed, and how to wire the functions into an existing app.
 
 ---
@@ -163,7 +262,7 @@ Invalidate the Task 1 cache after a successful update.
 1. **No Hallucinations:** Do not invent, guess, or hallucinate API endpoints, GraphQL properties, or SDK methods that are not explicitly provided in the context or linked documentation.
 2. **Strict SDK/Library Usage:** If an official SDK or library is specified (e.g., Intuit Java SDK), use ONLY the methods and classes that exist in its latest public release. Do not construct fake SDK models. For Custom Fields specifically: GraphQL (Tasks 1, 4, 5) has no SDK — use a plain HTTP client. For REST V3 (Tasks 2 & 3), the deciding constraint is the mandatory `include=enhancedAllCustomFields` URL parameter: use the SDK's create/read methods (`DataService.add()` / `findById()` in Java, `dataService.Add<T>()` in .NET) **only when the SDK exposes a public hook to attach that parameter**. If it does not — as with the Python and Node.js SDKs — do not force it through the SDK: build the request body as a plain object with PascalCase keys and POST via plain HTTP with `&include=enhancedAllCustomFields` on the URL.
 3. **Provided Links Only:** You must derive all API syntax, structure, and constraints strictly from the provided links. All HTTP responses (GraphQL and REST) must be parsed according to the provided documentation.
-4. **Endpoint Strictness:** Use the exact endpoints and query structures provided. Do not attempt to modify the base URL, append unsupported parameters, or alter the `minorversion={{minorversion}}` requirement.
+4. **Endpoint Strictness:** Use the exact endpoints and query structures provided. Do not attempt to modify the base URL, append unsupported parameters, or alter the `minorversion=75` requirement.
 5. **If Blocked/Missing Info:** If the provided documentation or payload structures lack required fields to compile a functional request, STOP and clearly state what specific information is missing instead of making an educated guess.
 
 I have provided you with all the necessary context and instructions. Please generate the code and documentation as per the instructions.

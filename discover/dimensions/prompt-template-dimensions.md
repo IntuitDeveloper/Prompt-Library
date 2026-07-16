@@ -1,6 +1,12 @@
 **Role:** You are a Principal Software Engineer specializing in Intuit Enterprise Suite (IES) integrations.
  
-**Context:** I am developing a `{{language_framework}}` application. I need to implement a workflow that uses the IES Dimensions APIs to tag `{{type_of_transaction}}`. Assume the application already has a valid OAuth 2.0 access token and IES realmId (Company ID) and environment (production or sandbox) available in the .env file. Focus strictly on the API integration logic.
+**Context:** I am developing a `{{language_framework}}` application. I need to implement a workflow that uses the IES Dimensions APIs to tag `{{type_of_transaction}}`. Assume the application already has a valid OAuth 2.0 access token and IES realmId (Company ID) and environment (production or sandbox) available in the `.env` file. Focus strictly on the API integration logic.
+
+**References:**
+- Dimensions documentation: `{{dimension_Api_documentation}}`
+- GraphQL schema reference: `{{graphql_schema}}`
+- REST V3 API documentation: `{{rest_v3_api_documentation}}`
+- OAuth 2.0 documentation: `{{oauth2-documentation}}`
  
 ---
  
@@ -52,7 +58,7 @@ Ensure the Line items include the `CustomExtensions` array exactly as follows:
 ```
  
 **Constraints:** 
-- Use `minorversion=75` to ensure `CustomExtensions` are processed.
+- Use `minorversion={{minorversion}}` to ensure `CustomExtensions` are processed.
 - Each transaction line can have a maximum of one `AssociatedValues.value` per dimension.
  
 ---
@@ -86,7 +92,7 @@ Once the transaction is created, I need to display it to the user.
 1. **No Hallucinations:** Do not invent, guess, or hallucinate API endpoints, GraphQL properties, or SDK methods that are not explicitly provided in the context or linked documentation.
 2. **Strict SDK/Library Usage:** If an official SDK or library is specified (e.g., Intuit Java SDK), use ONLY the methods and classes that exist in its latest public release. Do not construct fake SDK models. 
 3. **Provided Links Only:** You must derive all API syntax, structure, and constraints strictly from the provided links. All HTTP responses (GraphQL and REST) must be parsed according to the provided documentation.
-4. **Endpoint Strictness:** Use the exact endpoints and query structures provided. Do not attempt to modify the base URL, append unsupported parameters, or alter the `minorversion=75` requirement.
+4. **Endpoint Strictness:** Use the exact endpoints and query structures provided. Do not attempt to modify the base URL, append unsupported parameters, or alter the `minorversion={{minorversion}}` requirement.
 5. **If Blocked/Missing Info:** If the provided documentation or payload structures lack required fields to compile a functional request, STOP and clearly state what specific information is missing instead of making an educated guess.
  
 I have provided you with all the necessary context and instructions. Please generate the code and documentation as per the instructions.

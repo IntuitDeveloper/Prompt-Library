@@ -2,6 +2,12 @@
 
 **Context:** I am developing a `{{language_framework}}` application. I need to implement a workflow that uses the Projects APIs to create a project and generate project estimates for IES or QuickBooks Advanced companies. Assume the application already has a valid OAuth 2.0 access token, realmId (Company ID), and environment (production or sandbox) available in the `.env` file. Focus strictly on the API integration logic.
 
+**References:**
+- Project Estimate documentation: `{{project-estimate-documentation}}`
+- GraphQL schema reference: `{{graphql_schema}}`
+- REST V3 API documentation: `{{rest_v3_api_documentation}}`
+- OAuth 2.0 documentation: `{{oauth2-documentation}}`
+
 ---
 
 ## Task 1: Pre-flight & Discovery
@@ -83,7 +89,7 @@ Ensure the Estimate request body includes **both** `ProjectRef` and `CustomerRef
 At line level, ensure each line item includes both `Amount` and `CostAmount`, where `CostAmount` is calculated as `Amount` plus/minus `{{markup_percentages}}` percent of `Amount`.
 
 **Constraints:**
-- Use `minorversion=75` to ensure `ProjectRef` is processed.
+- Use `minorversion={{minorversion}}` to ensure `ProjectRef` is processed.
  
 ---
  
@@ -116,7 +122,7 @@ Once the Estimate is created, display it to the user in a readable format.
 1. **No Hallucinations:** Do not invent, guess, or hallucinate API endpoints, GraphQL properties, or SDK methods that are not explicitly provided in the context or linked documentation.
 2. **Strict SDK/Library Usage:** If an official SDK or library is specified (e.g., Intuit Java SDK), use ONLY the methods and classes that exist in its latest public release. Do not construct fake SDK models. 
 3. **Provided Links Only:** You must derive all API syntax, structure, and constraints strictly from the provided links. All HTTP responses (GraphQL and REST) must be parsed according to the provided documentation.
-4. **Endpoint Strictness:** Use the exact endpoints and query structures provided. Do not attempt to modify the base URL, append unsupported parameters, or alter the `minorversion=75` requirement.
+4. **Endpoint Strictness:** Use the exact endpoints and query structures provided. Do not attempt to modify the base URL, append unsupported parameters, or alter the `minorversion={{minorversion}}` requirement.
 5. **If Blocked/Missing Info:** If the provided documentation or payload structures lack required fields to compile a functional request, STOP and clearly state what specific information is missing instead of making an educated guess.
  
 I have provided you with all the necessary context and instructions. Please generate the code and documentation as per the instructions.
