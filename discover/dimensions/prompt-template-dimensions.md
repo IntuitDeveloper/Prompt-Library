@@ -38,7 +38,9 @@ For each `definitionId` from Step A, call `appFoundationsActiveCustomDimensionVa
 ---
  
 ## Task 2: Dynamic Transaction Creation (REST V3)
- 
+
+> **Host:** Task 1 uses the GraphQL endpoint above; Task 2 is **REST V3** — prepend the REST base URL (Production `https://{{rest_baseurl_production}}`, Sandbox `https://{{rest_baseurl_sandbox}}`, select by `QBO_ENV`) to the `/v3/company/...` path below. Do not send REST calls to the GraphQL host.
+
 {{transaction_creation_instructions}}
 
 ### Data flow for CustomExtensions:

@@ -6,3 +6,18 @@ workflows/webhooks-migration/ready-prompt.md
 
 # Node
 node_modules/
+
+# Local test harnesses & Postman collections (not distributed with the prompt packages)
+discover/*/postman/
+discover/*/test/
+
+# Claude Code — ignore personal/local files, but KEEP shared workflows tracked.
+# (.claude/workflows/ holds team-shared workflows like verify-discover-prompts.js.)
+.claude/settings.local.json
+.claude/**/settings.local.json
+.claude/.session/
+.claude/sessions/
+.claude/skill-observations/
+.claude/*.local.*
+.claude/todos/
+.claude/shell-snapshots/
