@@ -11,13 +11,5 @@ node_modules/
 discover/*/postman/
 discover/*/test/
 
-# Claude Code — ignore personal/local files, but KEEP shared workflows tracked.
-# (.claude/workflows/ holds team-shared workflows like verify-discover-prompts.js.)
-.claude/settings.local.json
-.claude/**/settings.local.json
-.claude/.session/
-.claude/sessions/
-.claude/skill-observations/
-.claude/*.local.*
-.claude/todos/
-.claude/shell-snapshots/
+# Claude Code — local tooling, not shipped in this public repo.
+.claude/
