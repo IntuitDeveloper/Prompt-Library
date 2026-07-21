@@ -8,6 +8,15 @@
 - OAuth 2.0 documentation: `{{oauth2-documentation}}`
 - Official sample apps: `{{custom_field_sample_app_java}}` · `{{custom_field_sample_app_python}}`
 
+**Hosts:**
+- **GraphQL endpoint** (Tasks 1, 4, 5 — Custom Field *definitions*). This API is **production-only**, so always use the production host regardless of `QBO_ENV`:
+  - Production: `{{graphql_endpoint_production}}`
+- **REST V3 base URL** (Tasks 2, 3 — attaching/reading custom field *values* on a transaction). These honor `QBO_ENV`:
+  - Production: `https://{{rest_baseurl_production}}`
+  - Sandbox: `https://{{rest_baseurl_sandbox}}`
+
+REST V3 paths below (e.g. `POST /v3/company/{{companyid}}/...`) are relative to the REST base URL. Do not modify either host.
+
 ---
 
 ## Task 1: Discover Custom Field Definitions (GraphQL)
@@ -140,7 +149,7 @@ Invalidate the Task 1 cache after a successful update.
 
 ---
 
-## Technical Best Practices:
+## Technical Best Practices
 
 - **Caching:** Cache the Task 1 definition map for 1 hour. Invalidate after Task 4 or Task 5.
 - **Error Handling:** Include blocks for:
@@ -157,11 +166,17 @@ Invalidate the Task 1 cache after a successful update.
 
 ---
 
+## Language-Specific SDK Notes
+
+{{sdk_notes}}
+
+---
+
 ## 🛑 AI Guardrails (Anti-Hallucination Constraints)
 
 **CRITICAL INSTRUCTIONS - YOU MUST ADHERE TO THE FOLLOWING:**
 1. **No Hallucinations:** Do not invent, guess, or hallucinate API endpoints, GraphQL properties, or SDK methods that are not explicitly provided in the context or linked documentation.
-2. **Strict SDK/Library Usage:** If an official SDK or library is specified (e.g., Intuit Java SDK), use ONLY the methods and classes that exist in its latest public release. Do not construct fake SDK models. For Custom Fields specifically: GraphQL (Tasks 1, 4, 5) has no SDK — use a plain HTTP client. For REST V3 (Tasks 2 & 3), the deciding constraint is the mandatory `include=enhancedAllCustomFields` URL parameter: use the SDK's create/read methods (`DataService.add()` / `findById()` in Java, `dataService.Add<T>()` in .NET) **only when the SDK exposes a public hook to attach that parameter**. If it does not — as with the Python and Node.js SDKs — do not force it through the SDK: build the request body as a plain object with PascalCase keys and POST via plain HTTP with `&include=enhancedAllCustomFields` on the URL.
+2. **Strict SDK/Library Usage:** If an official SDK or library is specified (e.g., Intuit Java SDK), use ONLY the methods and classes that exist in its latest public release. Do not construct fake SDK models. For Custom Fields specifically: GraphQL (Tasks 1, 4, 5) has no SDK — use a plain HTTP client. For REST V3 (Tasks 2 & 3), use the SDK's create/read methods (`DataService.add()` / `findById()` in Java, `dataService.Add<T>()` in .NET, `entity.save(qb=client, params=...)` in Python). Each SDK has a language-specific way to attach the `enhancedAllCustomFields` include parameter; see the language-specific SDK notes for the exact mechanism. (Note: the Node.js SDK has no public hook for this parameter — for Node, build the request body as a plain object with PascalCase keys and POST via plain HTTP with `&include=enhancedAllCustomFields` on the URL.)
 3. **Provided Links Only:** You must derive all API syntax, structure, and constraints strictly from the provided links. All HTTP responses (GraphQL and REST) must be parsed according to the provided documentation.
 4. **Endpoint Strictness:** Use the exact endpoints and query structures provided. Do not attempt to modify the base URL, append unsupported parameters, or alter the `minorversion={{minorversion}}` requirement.
 5. **If Blocked/Missing Info:** If the provided documentation or payload structures lack required fields to compile a functional request, STOP and clearly state what specific information is missing instead of making an educated guess.

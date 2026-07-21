@@ -69,7 +69,9 @@ For each `definitionId` from Step A, call `appFoundationsActiveCustomDimensionVa
 ---
  
 ## Task 2: Dynamic Transaction Creation (REST V3)
- 
+
+> **Host:** Task 1 uses the GraphQL endpoint above; Task 2 is **REST V3** — prepend the REST base URL (Production `https://quickbooks.api.intuit.com`, Sandbox `https://sandbox-quickbooks.api.intuit.com`, select by `QBO_ENV`) to the `/v3/company/...` path below. Do not send REST calls to the GraphQL host.
+
 Create salesreceipt with default item id : 1 and default customer : 1 and salesreceipt amount: 111. 
 
 ### Data flow for CustomExtensions:
@@ -112,7 +114,7 @@ Ensure the Line items include the `CustomExtensions` array exactly as follows:
  
 Once the transaction is created, I need to display it to the user.
  
-- **Fetch:** using `GET /v3/company/{{companyid}}/salesreceipt/{{TransactionId}}`.
+- **Fetch:** using `GET /v3/company/{{companyid}}/salesreceipt/{{TransactionId}}?minorversion=75`.
 - **Data Hydration:** The API returns IDs (keys/values) in `CustomExtensions.AssociatedValues` for each `salesreceipt` line. Write a helper function that maps these IDs back to the human-readable names (e.g., "Region: North") using the cached data from the GraphQL discovery in Task 1.
 - **Display Logic:** Format the output to show each `salesreceipt` Line, the item name, the amount, and a comma-separated list of the associated Dimension Names and values.
 - **Line Filtering:** Only hydrate and display appropriate `salesreceipt` lines. Exclude system lines (`SubTotalLineDetail`, `GroupLineDetail`, `DiscountLineDetail`, `TaxLineDetail`) that QuickBooks adds automatically—these are not product lines and have no dimensions.

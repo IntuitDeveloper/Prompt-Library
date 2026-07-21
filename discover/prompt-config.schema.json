@@ -21,12 +21,16 @@
     "rest_v3_api_documentation",
     "project-estimate-documentation",
     "projects_discovery_query",
-    "project_creation_query"
+    "project_creation_query",
+    "custom_field_transaction_creation_instructions"
   ],
   "properties": {
     "integration_mode": {
       "type": "string",
-      "enum": ["new", "existing"],
+      "enum": [
+        "new",
+        "existing"
+      ],
       "description": "Whether to scaffold a new project or produce importable modules for an existing codebase"
     },
     "language_framework": {
@@ -156,6 +160,50 @@
       "type": "string",
       "description": "GraphQL mutation for creating a project"
     },
+    "project_budget_creation_instructions": {
+      "type": "string",
+      "description": "Free-form instructions for creating a Project Budget (Business Planning GraphQL)"
+    },
+    "project_budget_documentation": {
+      "type": "string",
+      "description": "URL to the Project Budget use-case documentation"
+    },
+    "project_budget_create_variables_example": {
+      "type": "string",
+      "description": "Best-effort sample GraphQL variables payload for businessPlanningCreateBudget (verify against live schema)"
+    },
+    "project_budget_update_variables_example": {
+      "type": "string",
+      "description": "Best-effort sample GraphQL variables payload for businessPlanningUpdateBudget — send only the changed/deleted lines (updates MERGE by sequenceId); no syncToken (does not exist on BusinessPlanning_Budget)"
+    },
+    "project_budget_delete_variables_example": {
+      "type": "string",
+      "description": "Best-effort sample GraphQL variables payload for businessPlanningDeleteBudgets"
+    },
+    "project_budget_details_paginated_query": {
+      "type": "string",
+      "description": "GraphQL query template for cursor-based budgetDetailsPaginated traversal"
+    },
+    "project_change_order_creation_instructions": {
+      "type": "string",
+      "description": "Free-form instructions for creating a Project Change Order (REST V3)"
+    },
+    "project_change_order_documentation": {
+      "type": "string",
+      "description": "URL to the Project Change Order use-case documentation"
+    },
+    "project_change_order_error_codes_documentation": {
+      "type": "string",
+      "description": "URL to the Project Change Order error-codes documentation"
+    },
+    "project_change_order_v3_endpoint": {
+      "type": "string",
+      "description": "REST V3 endpoint for creating/updating a ChangeOrder"
+    },
+    "project_change_order_get_endpoint": {
+      "type": "string",
+      "description": "REST V3 endpoint for reading a ChangeOrder by ID"
+    },
     "php-sdk-documentation": {
       "type": "string",
       "description": "URL to PHP SDK documentation"
@@ -178,79 +226,131 @@
     },
     "custom_field_documentation": {
       "type": "string",
-      "description": "URL to the Custom Fields use-case documentation"
+      "description": "URL to the QuickBooks Custom Fields API documentation"
+    },
+    "custom_field_scope_read": {
+      "type": "string",
+      "description": "OAuth scope for reading custom field definitions via GraphQL"
     },
     "custom_field_scope_readwrite": {
       "type": "string",
-      "description": "OAuth scope required for read/write access to custom field definitions"
+      "description": "OAuth scope for creating/updating custom field definitions via GraphQL"
     },
     "custom_field_definitions_query": {
       "type": "string",
-      "description": "GraphQL query for fetching custom field definitions"
+      "description": "GraphQL query for discovering custom field definitions (with pagination cursor)"
     },
     "custom_field_create_definition_mutation": {
       "type": "string",
-      "description": "GraphQL mutation for creating a custom field definition"
+      "description": "GraphQL mutation for creating a new custom field definition"
     },
     "custom_field_create_definition_variables_example": {
       "type": "string",
-      "description": "Example variables payload for the create custom field definition mutation"
+      "description": "Example variables JSON for the create-definition mutation"
     },
     "custom_field_update_definition_mutation": {
       "type": "string",
-      "description": "GraphQL mutation for updating a custom field definition"
+      "description": "GraphQL mutation for updating an existing custom field definition (appFoundationsUpdateCustomFieldDefinition). Also used to disable by setting input.active = false."
     },
     "custom_field_update_definition_variables_example": {
       "type": "string",
-      "description": "Example variables payload for the update custom field definition mutation"
+      "description": "Example variables JSON for renaming a custom field definition via the update mutation"
     },
     "custom_field_disable_variables_example": {
       "type": "string",
-      "description": "Example variables payload for disabling a custom field definition"
+      "description": "Example variables JSON for disabling a custom field definition (update mutation with active=false)"
+    },
+    "custom_field_sample_app_java": {
+      "type": "string",
+      "description": "URL of the official Intuit Java sample app for Custom Fields"
+    },
+    "custom_field_sample_app_python": {
+      "type": "string",
+      "description": "URL of the official Intuit Python sample app for Custom Fields"
+    },
+    "custom_field_definition_endpoint": {
+      "type": "string",
+      "description": "REST V3 endpoint for querying CustomFieldDefinition entities"
     },
     "custom_field_payload_structure": {
       "type": "string",
-      "description": "JSON shape of the custom field values attached to a transaction"
+      "description": "JSON structure for the CustomField array in transaction payloads"
     },
     "custom_field_transaction_creation_instructions": {
       "type": "string",
       "description": "Free-form instructions for creating a transaction with custom field values"
     },
-    "custom_field_sample_app_java": {
-      "type": "string",
-      "description": "URL to the official Custom Fields Java sample app"
-    },
-    "custom_field_sample_app_python": {
-      "type": "string",
-      "description": "URL to the official Custom Fields Python sample app"
-    },
     "sales_tax_documentation": {
       "type": "string",
-      "description": "URL to the Sales Tax use-case documentation"
+      "description": "URL to QBO GraphQL Sales Tax API documentation"
     },
     "sales_tax_scope": {
       "type": "string",
-      "description": "OAuth scope required for the Sales Tax calculation API"
+      "description": "OAuth scope required to call the Sales Tax calculation mutation"
     },
     "sales_tax_calculate_mutation": {
       "type": "string",
-      "description": "GraphQL mutation for calculating sale transaction tax"
+      "description": "Verbatim GraphQL mutation for indirectTaxCalculateSaleTransactionTax"
     },
     "sales_tax_calculate_variables_example": {
       "type": "string",
-      "description": "Example variables payload for the sales tax calculation mutation"
+      "description": "Example variables JSON for the sales tax calculation mutation"
     },
     "sales_tax_sample_app_java": {
       "type": "string",
-      "description": "URL to the official Sales Tax Java sample app"
+      "description": "URL of the official Intuit Java sample app for Sales Tax"
     },
     "sales_tax_sample_app_python": {
       "type": "string",
-      "description": "URL to the official Sales Tax Python sample app"
+      "description": "URL of the official Intuit Python sample app for Sales Tax"
     },
     "sales_tax_sample_app_nodejs": {
       "type": "string",
-      "description": "URL to the official Sales Tax Node.js sample app"
+      "description": "URL of the official Intuit Node.js sample app for Sales Tax"
+    },
+    "rest_v3_limits_documentation": {
+      "type": "string",
+      "description": "URL to QBO REST V3 limits & throttles documentation"
+    },
+    "developer_portal_url": {
+      "type": "string",
+      "description": "Intuit developer portal root URL"
+    },
+    "oauth_discovery_production": {
+      "type": "string",
+      "description": "OpenID discovery document URL (production)"
+    },
+    "oauth_discovery_sandbox": {
+      "type": "string",
+      "description": "OpenID discovery document URL (sandbox)"
+    },
+    "oauth_authorization_endpoint": {
+      "type": "string",
+      "description": "OAuth 2.0 authorization endpoint (consent screen)"
+    },
+    "oauth_token_endpoint": {
+      "type": "string",
+      "description": "OAuth 2.0 token endpoint (code exchange + refresh)"
+    },
+    "oauth_revocation_endpoint": {
+      "type": "string",
+      "description": "OAuth 2.0 token revocation endpoint"
+    },
+    "oauth_userinfo_endpoint": {
+      "type": "string",
+      "description": "OpenID Connect UserInfo endpoint (prod + sandbox)"
+    },
+    "oauth_hard_expiry_request_header": {
+      "type": "string",
+      "description": "Opt-in request header to include the refresh-token hard-expiry field"
+    },
+    "oauth_hard_expiry_response_field": {
+      "type": "string",
+      "description": "Response field carrying the refresh-token hard (5-year) expiry in seconds"
+    },
+    "oauth_reconnect_url": {
+      "type": "string",
+      "description": "Intuit-proxied reconnect URL template for re-auth on hard expiry"
     }
   },
   "additionalProperties": false

@@ -4,9 +4,19 @@
 
 **References:**
 - Project Estimate documentation: `https://developer.intuit.com/app/developer/qbo/docs/workflows/manage-projects/use-cases#use-case-5`
+- Estimate (REST V3) entity documentation: `https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/estimate`
 - GraphQL schema reference: `https://developer.intuit.com/app/developer/gql/docs/api/qbexternal/queries/`
-- REST V3 API documentation: `https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/salesreceipt`
 - OAuth 2.0 documentation: `https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/oauth-2.0`
+
+**Hosts (select by `QBO_ENV`) — this workflow uses TWO hosts:**
+- **REST V3 base URL** (CompanyInfo + Preferences pre-flight, and the Estimate entity in Task 2):
+  - Production: `https://quickbooks.api.intuit.com`
+  - Sandbox: `https://sandbox-quickbooks.api.intuit.com`
+- **GraphQL endpoint** (`projectManagement*` operations in Task 1):
+  - Production: `https://qb.api.intuit.com/graphql`
+  - Sandbox: `https://qb-sandbox.api.intuit.com/graphql`
+
+REST v3 paths below are relative to the REST base URL; `projectManagement*` operations POST to the GraphQL endpoint. Do not modify either host.
 
 ---
 
@@ -15,7 +25,7 @@
 **Capability Check:** Before making any Projects or Estimate API calls, verify the connected QuickBooks company meets all three prerequisites below. Run these checks in order and stop at the first failure.
 
 #### Check 1 — Account Type (REST)
-Query the CompanyInfo entity and iterate over the `NameValue` list to find the entry where `Name` equals `"OfferingSku"`. The company is eligible if the `Value` is `"QuickBooks Online Advanced"`. If the condition is not met, trigger a user-friendly error:
+Query the CompanyInfo entity and iterate over the `NameValue` list to find the entry where `Name` equals `"OfferingSku"`. The company is eligible if the `Value` is `"QuickBooks Online Advanced"` **or** indicates Intuit Enterprise Suite. If the condition is not met, trigger a user-friendly error:
 > "Project Estimates are only available for Intuit Enterprise Suite and QuickBooks Advanced accounts."
 
 #### Check 2 — Country (REST)
@@ -71,7 +81,7 @@ Create an estimate with default item id : 1 ,UnitPrice: 1, Qty: 100, and ItemAcc
 
 ### API Details:
 - **Endpoint:** `POST /v3/company/{{companyid}}/estimate?minorversion=75`
-- **Documentation:** Refer to `https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/salesreceipt` and `https://developer.intuit.com/app/developer/qbo/docs/workflows/manage-projects/use-cases#use-case-5`
+- **Documentation:** Refer to `https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/estimate` and `https://developer.intuit.com/app/developer/qbo/docs/workflows/manage-projects/use-cases#use-case-5`
 
 ### Payload Structure:
 Ensure the Estimate request body includes **both** `ProjectRef` and `CustomerRef` at the top level, exactly as follows:
@@ -97,7 +107,7 @@ At line level, ensure each line item includes both `Amount` and `CostAmount`, wh
 
 Once the Estimate is created, display it to the user in a readable format.
 
-- **Fetch:** Retrieve the created Estimate using `GET /v3/company/{{companyid}}/estimate/{{TransactionId}}`.
+- **Fetch:** Retrieve the created Estimate using `GET /v3/company/{{companyid}}/estimate/{{TransactionId}}?minorversion=75`.
 - **Data Hydration:** The API response contains `ProjectRef.value` (the project ID). Write a helper function that maps this ID back to the human-readable project name using the data cached from the GraphQL discovery in Task 1.
 - **Display Logic:** Format the output to show the Estimate details including: project name, customer name, line items with description, quantity, unit price, `Amount`, `CostAmount`, and totals.
 - **Line Filtering:** Only display product/service lines. Exclude system-generated lines (`SubTotalLineDetail`, `DiscountLineDetail`, `TaxLineDetail`) that QuickBooks adds automatically.

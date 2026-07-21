@@ -4,9 +4,19 @@
 
 **References:**
 - Project Estimate documentation: `{{project-estimate-documentation}}`
+- Estimate (REST V3) entity documentation: `{{estimate_rest_v3_api_documentation}}`
 - GraphQL schema reference: `{{graphql_schema}}`
-- REST V3 API documentation: `{{rest_v3_api_documentation}}`
 - OAuth 2.0 documentation: `{{oauth2-documentation}}`
+
+**Hosts (select by `QBO_ENV`) — this workflow uses TWO hosts:**
+- **REST V3 base URL** (CompanyInfo + Preferences pre-flight, and the Estimate entity in Task 2):
+  - Production: `https://{{rest_baseurl_production}}`
+  - Sandbox: `https://{{rest_baseurl_sandbox}}`
+- **GraphQL endpoint** (`projectManagement*` operations in Task 1):
+  - Production: `{{graphql_endpoint_production}}`
+  - Sandbox: `{{graphql_endpoint_sandbox}}`
+
+REST v3 paths below are relative to the REST base URL; `projectManagement*` operations POST to the GraphQL endpoint. Do not modify either host.
 
 ---
 
@@ -15,7 +25,7 @@
 **Capability Check:** Before making any Projects or Estimate API calls, verify the connected QuickBooks company meets all three prerequisites below. Run these checks in order and stop at the first failure.
 
 #### Check 1 — Account Type (REST)
-Query the CompanyInfo entity and iterate over the `NameValue` list to find the entry where `Name` equals `"OfferingSku"`. The company is eligible if the `Value` is `"QuickBooks Online Advanced"`. If the condition is not met, trigger a user-friendly error:
+Query the CompanyInfo entity and iterate over the `NameValue` list to find the entry where `Name` equals `"OfferingSku"`. The company is eligible if the `Value` is `"QuickBooks Online Advanced"` **or** indicates Intuit Enterprise Suite. If the condition is not met, trigger a user-friendly error:
 > "Project Estimates are only available for Intuit Enterprise Suite and QuickBooks Advanced accounts."
 
 #### Check 2 — Country (REST)
@@ -71,7 +81,7 @@ Use the `projectId` and `customerId` obtained from Task 1 (Step A or Step B) to 
 
 ### API Details:
 - **Endpoint:** `{{transaction_v3_estimate_api_endpoint}}`
-- **Documentation:** Refer to `{{rest_v3_api_documentation}}` and `{{project-estimate-documentation}}`
+- **Documentation:** Refer to `{{estimate_rest_v3_api_documentation}}` and `{{project-estimate-documentation}}`
 
 ### Payload Structure:
 Ensure the Estimate request body includes **both** `ProjectRef` and `CustomerRef` at the top level, exactly as follows:

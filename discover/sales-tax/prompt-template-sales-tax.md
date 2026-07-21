@@ -107,7 +107,7 @@ Shipping tax:               $<shipping.taxAmount>
 
 ---
 
-## Technical Best Practices:
+## Technical Best Practices
 
 - **No discovery caching needed.** Unlike most QBO entity flows, there's nothing to cache up front — the mutation computes everything per-call from the addresses you pass.
 - **`realmId` is NOT validated against the access token.** Empirically (verified May 2026): passing a bogus `realmId` header with a valid token returns a successful tax calculation against the token's bound company. Do **not** rely on the API to reject mismatched realm IDs. Validate the `QBO_REALM_ID` env var matches the token holder's company in your own app code if this matters.
@@ -138,7 +138,7 @@ Shipping tax:               $<shipping.taxAmount>
 - **Observability:** Capture and log the `intuit_tid` response header on every call. **NEVER** log access tokens, OAuth secrets, or PII (addresses, customer names).
 - **Typing:** Provide `{{typing_system}}` models for `IndirectTax_TaxCalculationInput`, `IndirectTax_TaxCalculationPayload`, `IndirectTax_TaxCalculationLineInput`, and `IndirectTax_ShipmentInput`.
 - **Output (integration mode: `{{integration_mode}}`):** Provide modular, clean code and a runnable verification example.
-  - **If mode is `new`:** Create a self-contained project in a folder named `qbo-sales-tax-{{language_framework}}` (no spaces). Include a `README.md` with setup and environment variable instructions, a dependency manifest, and a runnable main entry point that executes Task 1 against a hardcoded example transaction and prints the breakdown.
+  - **If mode is `new`:** Create a self-contained project in a folder named `qbo-sales-tax-{{language_framework}}` (no spaces, lowercase). Include a `README.md` with setup and environment variable instructions, a dependency manifest, and a runnable main entry point that executes Task 1 against a hardcoded example transaction and prints the breakdown.
   - **If mode is `existing`:** Produce modular, well-documented functions/classes/files designed to be imported into an existing codebase. Do **not** scaffold a new project structure. Before writing code, scan the workspace:
     1. Look for a dependency manifest (`pom.xml`, `build.gradle`, `package.json`, `requirements.txt`, `go.mod`, etc.) to confirm the build system.
     2. Look for existing service classes that make QBO API calls (e.g., files containing `QBO_REALM_ID`, `QBO_ACCESS_TOKEN`, `DataService`, or `OAuth2Authorizer`).
@@ -146,13 +146,19 @@ Shipping tax:               $<shipping.taxAmount>
 
     State your finding in one sentence before writing code (e.g., "Found existing Express app with `qboClient.js` — adding `salesTaxCalc.js` as a new module.") and match the project's package names, logging style, and error-handling patterns.
 
-> **SDK note:** No official QBO SDK includes typed bindings for the Indirect Tax GraphQL mutation. Regardless of language, use your preferred HTTP client to POST GraphQL requests to `{{graphql_endpoint_production}}` (or `{{graphql_endpoint_sandbox}}`) — even when an SDK is present, you call this mutation via raw HTTP.
+---
+
+## Language-Specific SDK Notes
+
+{{sdk_notes}}
+
+> If no SDK notes appear above, no official entity SDK exists for your language. Use your preferred HTTP client to POST GraphQL requests to `{{graphql_endpoint_production}}` (or `{{graphql_endpoint_sandbox}}`). The official QBO SDKs do **not** include typed bindings for the Indirect Tax GraphQL mutation — even when an SDK is present, you call this mutation via raw HTTP.
 
 ---
 
 ## 🛑 AI Guardrails (Anti-Hallucination Constraints)
 
-**CRITICAL INSTRUCTIONS - YOU MUST ADHERE TO THE FOLLOWING:**
+**CRITICAL INSTRUCTIONS — YOU MUST ADHERE TO THE FOLLOWING:**
 1. **No Hallucinations:** Do not invent or guess GraphQL fields, types, or arguments not present in the mutation/variables provided above. The schema does **not** expose `taxCodes`, `salesTaxCodes`, `taxRates`, or any other root query field for sales tax discovery — only the `indirectTaxCalculateSaleTransactionTax` mutation.
 2. **Exact Mutation:** Use the mutation provided in `{{sales_tax_calculate_mutation}}` verbatim. Do not add, remove, or rename fields. If the caller doesn't need a field in the response, you may omit it — but do not invent new fields.
 3. **No REST V3 / AST:** This prompt is **GraphQL-only**. Do **NOT** generate code that calls the REST V3 `/v3/company/{realmId}/{invoice,salesreceipt,...}` endpoints, queries `TaxCode` / `TaxRate` / `TaxAgency` via REST, or applies `TxnTaxDetail.TxnTaxCodeRef` in a transaction payload. That's a different integration path and is out of scope.

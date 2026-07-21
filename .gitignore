@@ -6,3 +6,10 @@ workflows/webhooks-migration/ready-prompt.md
 
 # Node
 node_modules/
+
+# Local test harnesses & Postman collections (not distributed with the prompt packages)
+discover/*/postman/
+discover/*/test/
+
+# Claude Code — local tooling, not shipped in this public repo.
+.claude/
