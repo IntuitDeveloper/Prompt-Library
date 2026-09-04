@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Intuit Developer Prompt Library Configuration",
-  "description": "Schema for prompt-config.json — validates configurable and static fields used by merge-prompt.js",
+  "description": "Schema for prompt-config.json \u2014 validates configurable and static fields used by merge-prompt.js",
   "type": "object",
   "required": [
     "integration_mode",
@@ -26,7 +26,10 @@
   "properties": {
     "integration_mode": {
       "type": "string",
-      "enum": ["new", "existing"],
+      "enum": [
+        "new",
+        "existing"
+      ],
       "description": "Whether to scaffold a new project or produce importable modules for an existing codebase"
     },
     "language_framework": {
@@ -155,6 +158,54 @@
     "project_creation_query": {
       "type": "string",
       "description": "GraphQL mutation for creating a project"
+    },
+    "project_budget_creation_instructions": {
+      "type": "string",
+      "description": "Free-form instructions for creating a Project Budget (Business Planning GraphQL)"
+    },
+    "project_budget_documentation": {
+      "type": "string",
+      "description": "URL to the Project Budget use-case documentation"
+    },
+    "project_budget_create_variables_example": {
+      "type": "string",
+      "description": "Best-effort sample GraphQL variables payload for businessPlanningCreateBudget (verify against live schema)"
+    },
+    "project_budget_update_variables_example": {
+      "type": "string",
+      "description": "Best-effort sample GraphQL variables payload for businessPlanningUpdateBudget \u2014 send only the changed/deleted lines (updates MERGE by sequenceId); no syncToken (does not exist on BusinessPlanning_Budget)"
+    },
+    "project_budget_delete_variables_example": {
+      "type": "string",
+      "description": "Best-effort sample GraphQL variables payload for businessPlanningDeleteBudgets"
+    },
+    "project_budget_details_paginated_query": {
+      "type": "string",
+      "description": "GraphQL query template for cursor-based budgetDetailsPaginated traversal"
+    },
+    "changeorder_rest_v3_api_documentation": {
+      "type": "string",
+      "description": "URL to the REST V3 ChangeOrder entity reference documentation"
+    },
+    "project_change_order_creation_instructions": {
+      "type": "string",
+      "description": "Free-form instructions for creating a Project Change Order (REST V3)"
+    },
+    "project_change_order_documentation": {
+      "type": "string",
+      "description": "URL to the Project Change Order use-case documentation"
+    },
+    "project_change_order_error_codes_documentation": {
+      "type": "string",
+      "description": "URL to the Project Change Order error-codes documentation"
+    },
+    "project_change_order_v3_endpoint": {
+      "type": "string",
+      "description": "REST V3 endpoint for creating/updating a ChangeOrder"
+    },
+    "project_change_order_get_endpoint": {
+      "type": "string",
+      "description": "REST V3 endpoint for reading a ChangeOrder by ID"
     },
     "php-sdk-documentation": {
       "type": "string",
