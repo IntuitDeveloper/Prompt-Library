@@ -18,7 +18,7 @@ cd Prompt-Library/discover
 # 2. Configure your settings
 #    Edit prompt-config.json (see Configuration section below)
 
-# 3. Generate a prompt (interactive — choose 1–4)
+# 3. Generate a prompt (interactive — choose 1–6)
 node merge-prompt.js
 
 # Or use a custom config profile
@@ -33,6 +33,8 @@ The script prompts you to pick which template to generate. Run it once per templ
 | `2` | `generated-prompts/projects-ready-prompt.md` | Projects API — create projects and project estimates |
 | `3` | `generated-prompts/custom-fields-ready-prompt.md` | Custom Fields API — discover, attach, and read custom field values |
 | `4` | `generated-prompts/sales-tax-ready-prompt.md` | Sales Tax API — calculate sale transaction tax |
+| `5` | `generated-prompts/project-budgets-ready-prompt.md` | Project Budgets — create, update, and delete Project Budgets |
+| `6` | `generated-prompts/project-change-orders-ready-prompt.md` | Project Change Orders — create Change Orders linked to a Project Estimate |
 
 Copy the contents of a generated prompt into your preferred AI coding assistant (e.g., Copilot, Cursor, ChatGPT, Windsurf) to generate a complete, runnable integration project.
 
@@ -52,11 +54,17 @@ Prompt-Library/discover/
 │   └── prompt-template-custom-fields.md    # Template — Custom Fields API workflow
 ├── sales-tax/
 │   └── prompt-template-sales-tax.md        # Template — Sales Tax calculation workflow
+├── project-budgets/
+│   └── prompt-template-project-budgets.md          # Template — Project Budgets workflow
+├── project-change-orders/
+│   └── prompt-template-project-change-orders.md    # Template — Project Change Orders workflow
 ├── generated-prompts/
 │   ├── dimensions-ready-prompt.md          # Generated — Dimensions API prompt
 │   ├── projects-ready-prompt.md            # Generated — Projects API prompt
 │   ├── custom-fields-ready-prompt.md       # Generated — Custom Fields API prompt
-│   └── sales-tax-ready-prompt.md           # Generated — Sales Tax API prompt
+│   ├── sales-tax-ready-prompt.md           # Generated — Sales Tax API prompt
+│   ├── project-budgets-ready-prompt.md     # Generated — Project Budgets prompt
+│   └── project-change-orders-ready-prompt.md # Generated — Project Change Orders prompt
 └── README.md                       # This file
 ```
 

@@ -81,8 +81,10 @@ console.log('  1 - Build prompt for dimensions API');
 console.log('  2 - Build prompt for project estimates');
 console.log('  3 - Build prompt for custom fields');
 console.log('  4 - Build prompt for sales tax');
+console.log('  5 - Build prompt for project budgets');
+console.log('  6 - Build prompt for project change orders');
 
-rl.question('\nEnter your choice (1-4): ', (answer) => {
+rl.question('\nEnter your choice (1-6): ', (answer) => {
   const choice = answer.trim();
 
   if (choice === '1') {
@@ -97,8 +99,14 @@ rl.question('\nEnter your choice (1-4): ', (answer) => {
   } else if (choice === '4') {
     //generate prompt for sales tax use cases code generation
     mergeTemplate('sales-tax/prompt-template-sales-tax.md', 'generated-prompts/sales-tax-ready-prompt.md');
+  } else if (choice === '5') {
+    //generate prompt for project budgets use cases code generation
+    mergeTemplate('project-budgets/prompt-template-project-budgets.md', 'generated-prompts/project-budgets-ready-prompt.md');
+  } else if (choice === '6') {
+    //generate prompt for project change orders use cases code generation
+    mergeTemplate('project-change-orders/prompt-template-project-change-orders.md', 'generated-prompts/project-change-orders-ready-prompt.md');
   } else {
-    console.error('Invalid choice. Please enter 1-4.');
+    console.error('Invalid choice. Please enter 1-6.');
     rl.close();
     process.exit(1);
   }
